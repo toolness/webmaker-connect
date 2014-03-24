@@ -1,8 +1,8 @@
-# Web Literacy Mapper [![Build Status](https://secure.travis-ci.org/toolness/weblitmapper.png?branch=master)](http://travis-ci.org/toolness/weblitmapper)
+# Webmaker Connect [![Build Status](https://secure.travis-ci.org/toolness/webmaker-connect.png?branch=master)](http://travis-ci.org/toolness/webmaker-connect)
 
-This is an attempt to make it easy to submit web resources that
-are on the [Web Literacy Map](https://webmaker.org/standard)
-to the Webmaker community via a bookmarklet.
+This is an [OAuth][] provider that makes it possible for third-party
+applications to access information and services related to a
+Webmaker user's account.
 
 ## Prerequisites
 
@@ -15,8 +15,8 @@ disabled.
 ## Quick Start
 
 ```
-git clone git://github.com/toolness/weblitmapper.git
-cd weblitmapper
+git clone git://github.com/toolness/webmaker-connect.git
+cd webmaker-connect
 npm install
 npm test
 source .env.example
@@ -39,14 +39,6 @@ string), the boolean is true; otherwise, it's false.
   Defaults to https://login.webmaker.org. Use `:fake:` to always map
   the username part of the user's email address to their Webmaker username,
   which is useful for debugging/offline development.
-
-* `MAKEAPI_PRIVATE_KEY` is the secret shared key for the Webmaker Make API.
-
-* `MAKEAPI_PUBLIC_KEY` is the public key for the Webmaker Make API.
-
-* `MAKEAPI_URL` is the URL for the Webmaker Make API. Defaults
-  to https://makeapi.webmaker.org. Use `:memory:` to use an in-memory
-  store for debugging/offline development.
 
 * `WEBMAKER_URL` is the URL for the user-facing Webmaker site. It will
   be used for display purposes only, as a means to direct users to
@@ -103,6 +95,7 @@ defined.
 Build/install [jscoverage][], run `make test-cov`, then open
 `coverage.html` in a browser.
 
+  [OAuth]: http://oauth.net/
   [PhantomJS]: http://phantomjs.org/
   [stubbyid]: http://toolness.github.io/stubbyid/
   [mocha(1)]: http://visionmedia.github.io/mocha/#usage

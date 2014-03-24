@@ -1,6 +1,6 @@
 {
-  "name": "weblitmapper",
-  "description": "Submit Web Literacy Map resources via a bookmarklet",
+  "name": "webmaker-connect",
+  "description": "OAuth provider for Mozilla Webmaker",
   "version": "0.0.1",
   "private": true,
   "scripts": {
@@ -20,9 +20,6 @@
     "nunjucks": "1.0",
     "csvrow": "0.1.0",
     "request": "2.33.0",
-    "makeapi-client": "mozilla/makeapi-client",
-    "through": "2.3.4",
-    "JSONStream": "0.8.0",
     "underscore": "1.5.1"
   },
   "engines": {
