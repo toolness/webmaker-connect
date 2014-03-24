@@ -4,6 +4,8 @@ This is an [OAuth][] provider that makes it possible for third-party
 applications to access information and services related to a
 Webmaker user's account.
 
+For potential use cases, see the [etherpad][].
+
 ## Prerequisites
 
 Node 0.10.
@@ -100,3 +102,4 @@ Build/install [jscoverage][], run `make test-cov`, then open
   [stubbyid]: http://toolness.github.io/stubbyid/
   [mocha(1)]: http://visionmedia.github.io/mocha/#usage
   [jscoverage]: https://github.com/visionmedia/node-jscoverage
+  [etherpad]: https://etherpad.mozilla.org/webmaker-api-use-cases
