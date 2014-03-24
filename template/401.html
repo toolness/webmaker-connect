@@ -1,0 +1,10 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+  {% if email %}
+    <p>Welcome! To continue, please create an account at <a href="{{ WEBMAKER_URL }}" target="_blank">{{ WEBMAKER_DOMAIN }}</a> and reload this page.</p>
+    <p>Sorry this is such a hassle right now. It will be easier in the future.</p>
+  {% else %}
+    <p>Welcome! Please <a href="#" class="js-login">login</a> to continue.</p>
+  {% endif %}
+{% endblock %}
