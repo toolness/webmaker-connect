@@ -4,6 +4,7 @@ var should = require('should');
 
 var website = require('../').website;
 var template = require('../').template;
+var NamedRoutes = require('../').NamedRoutes;
 
 describe("website", function() {
   var app, email;
@@ -12,6 +13,7 @@ describe("website", function() {
     email = null;
     app = express();
 
+    NamedRoutes.express(app);
     app.use(express.json());
     app.use(function(req, res, next) {
       req.csrfToken = function() { return 'irrelevant'; }
