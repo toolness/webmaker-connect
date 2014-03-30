@@ -13,6 +13,7 @@ describe('NamedRoutes', function() {
     var routes = new NamedRoutes();
     routes.add('/foo/:id', 'foo');
     routes.reverse('foo', {id: 'bar'}).should.eql('/foo/bar');
+    routes.reverse('foo', {id: 1}).should.eql('/foo/1');
   });
 
   it('should raise errors on nonexistent routes', function() {
