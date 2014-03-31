@@ -6,14 +6,17 @@ var Application = require('../').module('./model/application');
 describe('Application', function() {
   beforeEach(db.wipe);
 
-  it('should be saved when required fields are valid', function(done) {
+  it('should auto-generate api key and secret on save', function(done) {
     (new Application({
       name: 'my cool app',
       description: 'this is my cool app yo',
       website: 'http://coolapp.com',
-      apiKey: 'resgsergserg',
-      apiSecret: 'awpgonegpoanweg'
-    })).save(done);
+    })).save(function(err, model) {
+      if (err) return done(err);
+      model.apiKey.should.match(/^([A-Za-z0-9]+)$/);
+      model.apiSecret.should.match(/^([A-Za-z0-9]+)$/);
+      done();
+    });
   });
 
   it('should raise errors on unsafe website URLs', function(done) {
