@@ -10,7 +10,7 @@ describe('db', function() {
   });
 
   it('should allow for saving of models', function(done) {
-    var Cat = db.model('Cat', {name: 'string'});
+    var Cat = db.model('Cat', {name: String});
     var mayze = new Cat({name: 'Mayze'});
     mayze.save(done);
   });
