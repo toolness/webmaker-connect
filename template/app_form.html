@@ -1,0 +1,27 @@
+<div class="form-group">
+  {% fieldwidget form.field('name') %}
+  <label>Name</label>
+  <input type="text" class="form-control">
+  {% endfieldwidget %}
+</div>
+
+<div class="form-group">
+  {% fieldwidget form.field('description') %}
+  <label>Description</label>
+  <textarea class="form-control"></textarea>
+  {% endfieldwidget %}
+</div>
+
+<div class="form-group">
+  {% fieldwidget form.field('website') %}
+  <label>Website</label>
+  <input type="url" class="form-control" placeholder="http://">
+  {% endfieldwidget %}
+</div>
+
+<div class="form-group">
+  {% fieldwidget form.field('callbackURL') %}
+  <label>Callback URL</label>
+  <input type="url" class="form-control" placeholder="http://">
+  {% endfieldwidget %}
+</div>
