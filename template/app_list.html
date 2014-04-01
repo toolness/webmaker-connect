@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+
+{% block title %}Your Apps{% endblock %}
+
+{% block content %}
+  <h1>Your Apps</h1>
+  {% if apps.length == 0 %}
+  <p>You don't currently have any apps.</p>
+  {% endif %}
+  {% for app in apps %}
+  <h3>{{ app.name }}</h3>
+  <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
+  <p>{{ app.description }}</p>
+  <a href="{{ reverse('app:detail', {appId: app._id}) }}"
+     class="btn btn-default">Edit</a>
+  {% endfor %}
+{% endblock %}

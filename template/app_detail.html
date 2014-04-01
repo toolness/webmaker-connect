@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+
+{% block title %}Application: {{ app.name }}{% endblock %}
+
+{% block content %}
+  <h1>Application Details</h1>
+  <h3>{{ app.name }}</h3>
+  <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
+  <p>{{ app.description }}</p>
+  {% if isOwner %}
+  YOU ARE THE OWNER YAY
+  {% endif %}
+{% endblock %}
