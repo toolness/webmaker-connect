@@ -36,7 +36,7 @@ describe('model field widget for String', function() {
         type: 'String',
         name: 'myname',
         id: 'myid',
-        value: 'myvalue'
+        value: 'myvalue<'
       }
     };
   });
@@ -51,7 +51,7 @@ describe('model field widget for String', function() {
     ], [
       '<div class="alert alert-danger">ALAS</div>',
       '<label for="myid">hi</label>',
-      '<input type="text" id="myid" name="myname" value="myvalue">'
+      '<input type="text" id="myid" name="myname" value="myvalue&lt;">'
     ]);
   });
 
@@ -64,19 +64,19 @@ describe('model field widget for String', function() {
       '{{field.name}}' // Also ensure 'field' is unset after block tag end.
     ], [
       '<label for="myid">this is myname</label>',
-      '<input type="text" id="myid" name="myname" value="myvalue">'
+      '<input type="text" id="myid" name="myname" value="myvalue&lt;">'
     ]);
   });
 
   it('should work with <textarea>', function() {
     testTransform([
       '{% fieldwidget myfield %}',
-      '<label>this is {{field.name}}</label>',
+      '<label>this is {{field.value}}</label>',
       '<textarea></textarea>',
       '{% endfieldwidget %}',
     ], [
-      '<label for="myid">this is myname</label>',
-      '<textarea id="myid" name="myname">myvalue</textarea>'
+      '<label for="myid">this is myvalue&lt;</label>',
+      '<textarea id="myid" name="myname">myvalue&lt;</textarea>'
     ]);
   });
 });
