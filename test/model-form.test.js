@@ -54,6 +54,7 @@ describe('ModelForm', function() {
     field.name.should.eql('Foo_name');
     field.id.should.eql('Foo_name');
     field.isRequired.should.be.true;
+    field.type.should.eql('String');
   });
 
   it('takes whitelisted values from form data', function(done) {
