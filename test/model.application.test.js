@@ -35,4 +35,11 @@ describe('Application', function() {
       done();
     });
   });
+
+  it('should accept empty callback URLs', function(done) {
+    (new Application({callbackURL: ''})).save(function(err) {
+      should.equal(err.errors.callbackURL, undefined);
+      done();
+    });
+  });
 });

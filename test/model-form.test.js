@@ -10,12 +10,28 @@ var fooSchema = new Schema({
     return val == 'funky';
   }, 'This is not funky.']},
   defaulted: {type: String, default: function() { return 'default!'; }},
-  privateInfo: String
+  privateInfo: String,
+  anotherField: String
 });
 var Foo = db.model('Foo', fooSchema);
 
 describe('ModelForm', function() {
   beforeEach(db.wipe);
+
+  it('treats blank fields as undefined', function(done) {
+    var foo = new Foo({name: 'u', anotherField: 'hi'});
+    var form = new ModelForm({
+      model: Foo,
+      instance: foo,
+      formData: {Foo_name: 'u', Foo_anotherField: ''},
+      fields: ['name', 'anotherField']
+    });
+    form.validateAndSave(function() {
+      should.equal(form.errors, null);
+      should.equal(foo.anotherField, undefined);
+      done();
+    });
+  });
 
   it('raises error when there is no field for a data type', function() {
     (function() {
