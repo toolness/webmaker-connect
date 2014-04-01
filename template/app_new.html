@@ -3,6 +3,11 @@
 {% block title %}Create a New App{% endblock %}
 
 {% block content %}
+  <ol class="breadcrumb">
+    <li><a href="{{ reverse('app:list') }}">Apps</a>
+    <li class="active">Create An App</li>
+  </ol>
+
   <h1>Create a New App</h1>
   <form method="POST" role="form">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">

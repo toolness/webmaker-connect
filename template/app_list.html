@@ -3,6 +3,10 @@
 {% block title %}Your Apps{% endblock %}
 
 {% block content %}
+  <ol class="breadcrumb">
+    <li class="active">Apps</li>
+  </ol>
+
   <h1>Your Apps</h1>
   {% if apps.length == 0 %}
   <p>You don't currently have any apps.</p>
@@ -15,7 +19,7 @@
      class="btn btn-default">Edit</a>
   {% endfor %}
 
-  <p>
+  <p style="margin-top: 1em">
     <a href="{{ reverse('app:new') }}" class="btn btn-default">
       Create An App
     </a>

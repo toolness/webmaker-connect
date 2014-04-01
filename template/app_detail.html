@@ -3,6 +3,11 @@
 {% block title %}Application: {{ app.name }}{% endblock %}
 
 {% block content %}
+  <ol class="breadcrumb">
+    <li><a href="{{ reverse('app:list') }}">Apps</a>
+    <li class="active">{{ app.name }}</li>
+  </ol>
+
   <h1>Application Details</h1>
   <h3>{{ app.name }}</h3>
   <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
