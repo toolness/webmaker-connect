@@ -12,7 +12,10 @@
   <h3>{{ app.name }}</h3>
   <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
   <p>{{ app.description }}</p>
+
   {% if isOwner %}
-  YOU ARE THE OWNER YAY
+  <p><a href="{{ reverse('app:edit', {appId: app._id}) }}" class="btn btn-default">
+    Edit
+  </a></p>
   {% endif %}
 {% endblock %}
