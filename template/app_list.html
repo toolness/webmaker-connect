@@ -14,4 +14,10 @@
   <a href="{{ reverse('app:detail', {appId: app._id}) }}"
      class="btn btn-default">Edit</a>
   {% endfor %}
+
+  <p>
+    <a href="{{ reverse('app:new') }}" class="btn btn-default">
+      Create An App
+    </a>
+  </p>
 {% endblock %}
