@@ -41,6 +41,20 @@ describe('model field widget for String', function() {
     };
   });
 
+  it('should show error if present', function() {
+    ctx.myfield.error = 'ALAS';
+    testTransform([
+      '{% fieldwidget myfield %}',
+      '<label>hi</label>',
+      '<input type="text">',
+      '{% endfieldwidget %}'
+    ], [
+      '<div class="alert alert-danger">ALAS</div>',
+      '<label for="myid">hi</label>',
+      '<input type="text" id="myid" name="myname" value="myvalue">'
+    ]);
+  });
+
   it('should work with <input>', function() {
     testTransform([
       '{% fieldwidget myfield %}',
