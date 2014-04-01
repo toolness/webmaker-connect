@@ -4,7 +4,7 @@ var nunjucks = require('nunjucks');
 var WidgetExtension = require('../').module('./model-field-widget');
 
 function buildEnv() {
-  var env = new nunjucks.Environment();
+  var env = new nunjucks.Environment([], {autoescape: true});
 
   WidgetExtension.initialize(env);
   return env;
