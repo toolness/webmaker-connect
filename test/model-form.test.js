@@ -17,6 +17,17 @@ var Foo = db.model('Foo', fooSchema);
 describe('ModelForm', function() {
   beforeEach(db.wipe);
 
+  it('raises helpful exceptions for nonexistent fields', function() {
+    (function() {
+      new ModelForm({model: Foo, fields: ['nonexistent']});
+    }).should.throw('unknown field "nonexistent"');
+
+    (function() {
+      var form = new ModelForm({model: Foo, fields: ['name']});
+      form.field('privateInfo');
+    }).should.throw('unknown field "privateInfo"');
+  });
+
   it('ultimately falls back to a well-defined default', function() {
     var form = new ModelForm({model: Foo, fields: ['privateInfo']});
     form.field('privateInfo').value.should.equal('');
