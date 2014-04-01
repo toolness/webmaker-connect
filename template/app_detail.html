@@ -14,8 +14,9 @@
   <p>{{ app.description }}</p>
 
   {% if isOwner %}
-  <p><a href="{{ reverse('app:edit', {appId: app._id}) }}" class="btn btn-default">
-    Edit
-  </a></p>
+  <p>
+    <a href="{{ reverse('app:edit', {appId: app._id}) }}" class="btn btn-default">Edit</a>
+    <a href="{{ reverse('app:delete', {appId: app._id}) }}" class="btn btn-default">Delete</a>
+  </p>
   {% endif %}
 {% endblock %}
