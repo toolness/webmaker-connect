@@ -11,6 +11,7 @@ describe('Application', function() {
       name: 'my cool app',
       description: 'this is my cool app yo',
       website: 'http://coolapp.com',
+      owner: 'foo'
     })).save(function(err, model) {
       if (err) return done(err);
       model.apiKey.should.match(/^([A-Za-z0-9]+)$/);
