@@ -17,6 +17,14 @@ var Foo = db.model('Foo', fooSchema);
 describe('ModelForm', function() {
   beforeEach(db.wipe);
 
+  it('raises error when there is no field for a data type', function() {
+    (function() {
+      new ModelForm({model: {schema: {
+        paths: {blah: {instance: 'Funky'}}
+      }}, fields: ['blah']});
+    }).should.throw('no field for data type "Funky" for field "blah"');
+  });
+
   it('raises helpful exceptions for nonexistent fields', function() {
     (function() {
       new ModelForm({model: Foo, fields: ['nonexistent']});
