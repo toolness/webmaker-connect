@@ -49,8 +49,8 @@ describe('model field widget for String', function() {
       '<input type="text">',
       '{% endfieldwidget %}'
     ], [
-      '<div class="alert alert-danger">ALAS</div>',
       '<label for="myid">hi</label>',
+      '<div class="alert alert-danger">ALAS</div>',
       '<input type="text" id="myid" name="myname" value="myvalue&lt;">'
     ]);
   });
