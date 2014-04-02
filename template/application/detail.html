@@ -35,6 +35,20 @@
       <td>{{ app.callbackURL }}</td>      
     </tr>    
     {% endif %}
+
+    <tr>
+      <td>Request token URL</td>
+      <td>{{ reverseAbsolute('oauth:request_token') }}</td>
+    </tr>
+    <tr>
+      <td>Authorize URL</td>
+      <td>{{ reverseAbsolute('oauth:authorize') }}</td>
+    </tr>
+    <tr>
+      <td>Access token URL</td>
+      <td>{{ reverseAbsolute('oauth:access_token') }}</td>
+    </tr>
+
   </table>
 
   <p>
