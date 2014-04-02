@@ -8,12 +8,35 @@
     <li class="active">{{ app.name }}</li>
   </ol>
 
-  <h1>Application Details</h1>
-  <h3>{{ app.name }}</h3>
+  <h2>{{ app.name }}</h2>
   <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
   <p>{{ app.description }}</p>
 
   {% if isOwner %}
+  <h2>Application Settings</h2>
+
+  <table class="table">
+    <tr>
+      <td>API Key</td>
+      <td>{{ app.apiKey }}</td>
+    </tr>
+    <tr>
+      <td>API Secret</td>
+      <td>{{ app.apiSecret }}</td>
+    </tr>
+    <tr>
+      <td>Owner</td>
+      <td>{{ app.owner }}</td>      
+    </tr>
+
+    {% if app.callbackURL %}
+    <tr>
+      <td>Callback URL</td>
+      <td>{{ app.callbackURL }}</td>      
+    </tr>    
+    {% endif %}
+  </table>
+
   <p>
     <a href="{{ reverse('app:edit', app) }}" class="btn btn-default">Edit</a>
     <a href="{{ reverse('app:delete', app) }}" class="btn btn-default">Delete</a>
