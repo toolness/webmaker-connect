@@ -68,8 +68,12 @@
   </table>
 
   <p>
-    <a href="{{ reverse('app:edit', app) }}" class="btn btn-default">Edit</a>
-    <a href="{{ reverse('app:delete', app) }}" class="btn btn-default">Delete</a>
+    <a href="{{ reverse('app:edit', app) }}" class="btn btn-default">
+      <i class="fa fa-pencil"></i> Edit
+    </a>
+    <a href="{{ reverse('app:delete', app) }}" class="btn btn-default">
+      <i class="fa fa-trash-o"></i> Delete
+    </a>
   </p>
   {% endif %}
 {% endblock %}
