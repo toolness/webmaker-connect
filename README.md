@@ -10,6 +10,8 @@ For potential use cases, see the [etherpad][].
 
 Node 0.10.
 
+MongoDB 2.4.
+
 [PhantomJS][] 1.8 or later is used to automatically run the
 browser-side tests from the command-line, but this can be optionally
 disabled.
