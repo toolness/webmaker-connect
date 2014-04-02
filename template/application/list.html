@@ -1,6 +1,6 @@
 {% extends 'layout.html' %}
 
-{% include "application/macros.html" %}
+{% from "application/macros.html" import appProfile %}
 
 {% block title %}Your Apps{% endblock %}
 
@@ -10,7 +10,8 @@
   <p>You don't currently have any apps.</p>
   {% endif %}
   {% for app in apps %}
-  {{ appProfile(app, linkToDetails=true) }}
+    {% set detailsLink = reverse('app:detail', app) %}
+    {{ appProfile(app, link=detailsLink) }}
   {% endfor %}
 
   <p style="margin-top: 1em">

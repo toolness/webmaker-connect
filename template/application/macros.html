@@ -1,13 +1,13 @@
-{% macro appProfile(app, linkToDetails=false) %}
+{% macro appProfile(app, link='') %}
   <div class="media">
     <i class="pull-left fa fa-cog fa-5x media-object webmaker-app-icon"></i>
     <div class="media-body">
       <h3 class="media-heading">
-        {% if linkToDetails %}<a href="{{ reverse('app:detail', app) }}">{% endif %}
+        {% if link %}<a href="{{ link }}">{% endif %}
         {{ app.name }}
-        {% if linkToDetails %}</a>{% endif %}
+        {% if link %}</a>{% endif %}
       </h3>
-      {% if not linkToDetails %}
+      {% if not link %}
       <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
       {% endif %}
       <p>{{ app.description }}</p>
