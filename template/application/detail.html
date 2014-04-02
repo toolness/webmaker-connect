@@ -2,6 +2,10 @@
 
 {% block title %}Application: {{ app.name }}{% endblock %}
 
+{% block head %}
+  <link rel="stylesheet" href="{{ STATIC_ROOT }}/css/secret.css">
+{% endblock %}
+
 {% block content %}
   <ol class="breadcrumb">
     <li><a href="{{ reverse('app:list') }}">Apps</a>
@@ -28,7 +32,13 @@
     </tr>
     <tr>
       <td>API secret</td>
-      <td>{{ app.apiSecret }}</td>
+      <td>
+        <span class="secret-hidden" id="apisecret">{{ app.apiSecret }}</span>
+        <button data-secret-reveal="apisecret" class="btn btn-default btn-xs">
+          <i class="fa fa-lock"></i>
+          Show API Secret
+        </button>
+      </td>
     </tr>
     <tr>
       <td>Owner</td>
@@ -62,4 +72,8 @@
     <a href="{{ reverse('app:delete', app) }}" class="btn btn-default">Delete</a>
   </p>
   {% endif %}
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ STATIC_ROOT }}/js/secret.js"></script>
 {% endblock %}
