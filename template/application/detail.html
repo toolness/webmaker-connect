@@ -7,11 +7,6 @@
 {% endblock %}
 
 {% block content %}
-  <ol class="breadcrumb">
-    <li><a href="{{ reverse('app:list') }}">Apps</a>
-    <li class="active">{{ app.name }}</li>
-  </ol>
-
   <h2>{{ app.name }}</h2>
   <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
   <p>{{ app.description }}</p>

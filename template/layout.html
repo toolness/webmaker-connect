@@ -19,6 +19,11 @@
       <div class="navbar-header">
         <a class="navbar-brand" href="{{ reverse('home') }}">Webmaker Connect</a>
       </div>
+      {% if username %}
+      <ul class="nav navbar-nav">
+        <li><a href="{{ reverse('app:list') }}">Your Apps</a></li>
+      </ul>
+      {% endif %}
       <ul class="nav navbar-nav navbar-right">
         {% if email %}
         <li><button type="button" class="js-logout btn btn-primary navbar-btn">Logout

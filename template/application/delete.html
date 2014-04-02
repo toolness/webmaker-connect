@@ -3,12 +3,6 @@
 {% block title %}Application: {{ app.name }}{% endblock %}
 
 {% block content %}
-  <ol class="breadcrumb">
-    <li><a href="{{ reverse('app:list') }}">Apps</a>
-    <li><a href="{{ reverse('app:detail', app) }}">{{ app.name }}</a></li>
-    <li class="active">Delete</li>
-  </ol>
-
   <h1>Delete {{ app.name }}?</h1>
 
   <p>Are you sure you want to delete the application <strong>{{ app.name }}</strong>? This can't be undone.</p>
@@ -17,5 +11,6 @@
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
     <button type="submit" class="btn btn-default">Delete {{ app.name }}</button>
+    <a class="btn btn-default" href="{{ reverse('app:detail', app) }}">Cancel</a>
   </form>
 {% endblock %}

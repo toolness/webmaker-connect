@@ -3,12 +3,6 @@
 {% block title %}Application: {{ app.name }}{% endblock %}
 
 {% block content %}
-  <ol class="breadcrumb">
-    <li><a href="{{ reverse('app:list') }}">Apps</a>
-    <li><a href="{{ reverse('app:detail', app) }}">{{ app.name }}</a></li>
-    <li class="active">Edit</li>
-  </ol>
-
   <h1>Edit Application</h1>
 
   <form method="POST" role="form">
@@ -17,5 +11,6 @@
     {% include "application/form.html" %}
 
     <button type="submit" class="btn btn-default">Submit</button>
+    <a class="btn btn-default" href="{{ reverse('app:detail', app) }}">Cancel</a>
   </form>
 {% endblock %}
