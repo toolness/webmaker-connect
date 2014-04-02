@@ -16,6 +16,12 @@ describe('NamedRoutes', function() {
     routes.reverse('foo', {id: 1}).should.eql('/foo/1');
   });
 
+  it('should namespace routes with _ROUTE_PARAM_ if needed', function() {
+    var routes = new NamedRoutes();
+    routes.add('/foo/:id', 'foo');
+    routes.reverse('foo', {_ROUTE_PARAM_id: 'bar'}).should.eql('/foo/bar');
+  });
+
   it('should raise errors on nonexistent routes', function() {
     var routes = new NamedRoutes();
     (function() {

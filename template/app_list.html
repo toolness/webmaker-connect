@@ -15,7 +15,7 @@
   <h3>{{ app.name }}</h3>
   <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
   <p>{{ app.description }}</p>
-  <a href="{{ reverse('app:detail', {appId: app._id}) }}"
+  <a href="{{ reverse('app:detail', app) }}"
      class="btn btn-default">Details</a>
   {% endfor %}
 

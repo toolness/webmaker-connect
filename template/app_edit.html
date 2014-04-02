@@ -5,7 +5,7 @@
 {% block content %}
   <ol class="breadcrumb">
     <li><a href="{{ reverse('app:list') }}">Apps</a>
-    <li><a href="{{ reverse('app:detail', {appId: app._id}) }}">{{ app.name }}</a></li>
+    <li><a href="{{ reverse('app:detail', app) }}">{{ app.name }}</a></li>
     <li class="active">Edit</li>
   </ol>
 
