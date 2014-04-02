@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% include "application/macros.html" %}
+
 {% block title %}Application: {{ app.name }}{% endblock %}
 
 {% block content %}
@@ -8,7 +10,7 @@
   <form method="POST" role="form">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
-    {% include "application/form.html" %}
+    {{ appFormFields(form) }}
 
     <button type="submit" class="btn btn-primary">Submit</button>
     <a class="btn btn-default" href="{{ reverse('app:detail', app) }}">Cancel</a>

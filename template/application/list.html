@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% include "application/macros.html" %}
+
 {% block title %}Your Apps{% endblock %}
 
 {% block content %}
@@ -8,16 +10,7 @@
   <p>You don't currently have any apps.</p>
   {% endif %}
   {% for app in apps %}
-  <div class="media">
-    <i class="pull-left fa fa-cog fa-5x media-object webmaker-app-icon"></i>
-    <div class="media-body">
-      <h3 class="media-heading">{{ app.name }}</h3>
-      <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
-      <p>{{ app.description }}</p>
-      <a href="{{ reverse('app:detail', app) }}"
-         class="btn btn-default btn-sm">Details</a>
-    </div>
-  </div>
+  {{ appProfile(app, linkToDetails=true) }}
   {% endfor %}
 
   <p style="margin-top: 1em">

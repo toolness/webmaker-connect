@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% include "application/macros.html" %}
+
 {% block title %}Application: {{ app.name }}{% endblock %}
 
 {% block head %}
@@ -7,14 +9,7 @@
 {% endblock %}
 
 {% block content %}
-  <div class="media">
-    <i class="pull-left fa fa-cog fa-5x media-object webmaker-app-icon"></i>
-    <div class="media-body">
-      <h3 class="media-heading">{{ app.name }}</h3>
-      <p><a href="{{ app.website}} ">{{ app.website }}</a></p>
-      <p>{{ app.description }}</p>
-    </div>
-  </div>
+  {{ appProfile(app) }}
 
   {% if isOwner %}
   <h2>Application Settings</h2>

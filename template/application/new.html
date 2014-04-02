@@ -1,5 +1,7 @@
 {% extends 'layout.html' %}
 
+{% include "application/macros.html" %}
+
 {% block title %}Create a New App{% endblock %}
 
 {% block content %}
@@ -7,7 +9,7 @@
   <form method="POST" role="form">
     <input type="hidden" name="_csrf" value="{{ csrfToken }}">
 
-    {% include "application/form.html" %}
+    {{ appFormFields(form) }}
 
     <button type="submit" class="btn btn-primary">Create App</button>
   </form>
