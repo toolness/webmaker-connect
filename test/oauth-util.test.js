@@ -6,13 +6,21 @@ describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
 
   it('should reject names not on whitelist', function() {
-    should.equal(decode('oauth funk="heh"', /^oauth_/), null);
+    should.equal(decode('oauth funk="heh"', {}), null);
   });
 
   it('should accept names on whitelist', function() {
-    decode('oauth oauth_nonce="heh"', /^oauth_/).should.eql({
+    decode('oauth oauth_nonce="heh"', {oauth_nonce: true}).should.eql({
       oauth_nonce: 'heh'
     });
+  });
+
+  it('should fail when required params are not present', function() {
+    should.equal(decode('oauth a="heh"', {a: true, b: true}), null);
+  });
+
+  it('should succeed when optional params are not present', function() {
+    decode('oauth a="1"', {a: true, b: false}).should.eql({a: '1'});
   });
 
   it('should reject non-oauth auth-schemes', function() {
