@@ -5,6 +5,16 @@ var oauthUtil = require('../').oauthUtil;
 describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
 
+  it('should reject names not on whitelist', function() {
+    should.equal(decode('oauth funk="heh"', /^oauth_/), null);
+  });
+
+  it('should accept names on whitelist', function() {
+    decode('oauth oauth_nonce="heh"', /^oauth_/).should.eql({
+      oauth_nonce: 'heh'
+    });
+  });
+
   it('should reject non-oauth auth-schemes', function() {
     should.equal(decode('lol realm="example"'), null);
   });
