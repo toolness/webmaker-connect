@@ -35,6 +35,12 @@ describe("app", function() {
       .expect(403, done);
   });
 
+  it('does not protect /api POST endpoints with CSRF', function(done) {
+    request()
+      .post('/api/blargy')
+      .expect(404, done);
+  });
+
   it('disallows access to /test/ when not in debug mode', function(done) {
     request()
       .get('/test/')
