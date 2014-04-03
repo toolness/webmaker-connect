@@ -22,6 +22,7 @@
     "request": "2.33.0",
     "mongoose": "3.8.8",
     "cheerio": "0.13.1",
+    "oauth-sign": "0.4.0",
     "underscore": "1.5.1"
   },
   "engines": {
