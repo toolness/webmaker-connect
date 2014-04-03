@@ -5,8 +5,12 @@ var oauthUtil = require('../').oauthUtil;
 describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
 
-  it('should ignore non-oauth auth-schemes', function() {
-    decode('lol realm="example"').should.eql({});
+  it('should reject non-oauth auth-schemes', function() {
+    should.equal(decode('lol realm="example"'), null);
+  });
+
+  it('should reject oauth headers w/ duplicate values', function() {
+    should.equal(decode('OAuth realm="example", a="", a=""'), null);
   });
 
   it('should be case insensitive', function() {
@@ -21,8 +25,8 @@ describe('oauthUtil.decodeAuthorizationHeader()', function() {
     });
   });
 
-  it('should ignore malformed parameters', function() {
-    decode('OAuth realmexample, u="hi"').should.eql({u: 'hi'});
+  it('should reject malformed parameters', function() {
+    should.equal(decode('OAuth realmexample, u="hi"'), null);
   });
 
   it('should percent-decode parameter values', function() {
@@ -37,12 +41,12 @@ describe('oauthUtil.decodeAuthorizationHeader()', function() {
     decode('OAuth Az0-._~="~_.-0zA"').should.eql({'Az0-._~': '~_.-0zA'});
   });
 
-  it('should ignore malformed percent-encoded param values', function() {
-    decode('OAuth a="a%AFc"').should.eql({a: ''});
+  it('should reject malformed percent-encoded param values', function() {
+    should.equal(decode('OAuth a="a%AFc"'), null);
   });
 
-  it('should ignore malformed percent-encoded param names', function() {
-    decode('OAuth a%AFc="hi"').should.eql({});
+  it('should reject malformed percent-encoded param names', function() {
+    should.equal(decode('OAuth a%AFc="hi"'), null);
   });
 
   it('should allow for empty values', function() {
