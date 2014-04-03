@@ -1,6 +1,59 @@
 var should = require('should');
+var express = require('express');
+var request = require('supertest');
 
 var oauthUtil = require('../').oauthUtil;
+
+describe('oauthUtil.notBadOAuthRequestMiddleware()', function() {
+  var VALIDATORS = oauthUtil.VALIDATORS;
+  var middleware = oauthUtil.notBadOAuthRequestMiddleware;
+
+  function app(criteria) {
+    return express().get('/', middleware(criteria), function(req, res) {
+      return res.send(200, req.oauth);
+    });
+  }
+
+  it('should reject requests without auth header', function(done) {
+    request(app(VALIDATORS.REQUEST_TOKEN))
+      .get('/')
+      .expect('missing authorization header')
+      .expect(400, done);
+  });
+
+  it('should reject requests with bad auth header', function(done) {
+    request(app(VALIDATORS.REQUEST_TOKEN))
+      .get('/')
+      .set('Authorization', 'lolwut')
+      .expect('invalid or malformed authorization header')
+      .expect(400, done);
+  });
+
+  it('should pass through requests w/ not-bad auth header', function(done) {
+    request(app(VALIDATORS.REQUEST_TOKEN))
+      .get('/')
+      .set('Authorization',
+           'OAuth ' + [
+             'oauth_consumer_key="lol"',
+             'oauth_signature_method="HMAC-SHA1"',
+             'oauth_signature="meh"',
+             'oauth_timestamp="123"',
+             'oauth_nonce="blah"',
+             'oauth_version="1.0"',
+             'oauth_callback="' + encodeURIComponent('http://foo.org') + '"'
+           ].join(','))
+      .expect({
+        oauth_consumer_key: 'lol',
+        oauth_signature_method: "HMAC-SHA1",
+        oauth_signature: "meh",
+        oauth_timestamp: "123",
+        oauth_nonce: "blah",
+        oauth_version: "1.0",
+        oauth_callback: "http://foo.org"
+      })
+      .expect(200, done);
+  });
+});
 
 describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
