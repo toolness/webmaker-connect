@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+
+{% block title %}Authorize Application{% endblock %}
+
+{% block content %}
+  {% if error %}
+    <div class="alert alert-danger">
+      {{ error }}
+    </div>
+  {% else %}
+    Yay!
+  {% endif %}
+{% endblock %}
