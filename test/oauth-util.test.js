@@ -8,40 +8,49 @@ var oauthUtil = require('../').oauthUtil;
 describe('oauthUtil.hmacSignedMiddleware()', function() {
   var middleware = oauthUtil.hmacSignedMiddleware;
 
-  function app(oauth, getSecrets) {
+  function app(isInitialRequest, oauth, getSecrets) {
     oauth.oauth_signature_method = 'HMAC-SHA1';
     return express()
       .use(function(req, res, next) { req.oauth = oauth; next(); })
       .use(middleware({
         baseURL: 'http://example.org',
-        getSecrets: getSecrets
+        getSecrets: getSecrets,
+        isInitialRequest: isInitialRequest
       }))
       .get('*', function(req, res) { return res.send(200); });
   }
 
-  it('should reject invalid keys/tokens', function(done) {
-    request(app({
+  it('should reject invalid consumer key', function(done) {
+    request(app(true, {
       oauth_consumer_key: 'lol',
-      oauth_token: 'wut',
-    }, function getSecrets(options, cb) {
-      options.consumerKey.should.eql('lol');
-      options.accessToken.should.eql('wut');
-      cb(null, null);
+    }, function getSecrets(consumerKey, oauthToken, cb) {
+      consumerKey.should.eql('lol');
+      should.equal(oauthToken, undefined);
+      cb(null, null, null);
     })).get('/')
-      .expect('invalid consumer key or request/access token')
+      .expect('invalid consumer key')
+      .expect(401, done);
+  });
+
+  it('should reject invalid oauth token', function(done) {
+    request(app(false, {
+      oauth_consumer_key: 'lol',
+      oauth_token: 'bleh'
+    }, function getSecrets(consumerKey, oauthToken, cb) {
+      consumerKey.should.eql('lol');
+      oauthToken.should.eql('bleh');
+      cb(null, 'lol', null);
+    })).get('/')
+      .expect('invalid oauth token')
       .expect(401, done);
   });
 
   it('should reject invalid signatures', function(done) {
-    request(app({
+    request(app(true, {
       oauth_consumer_key: 'lol',
-      oauth_token: 'wut',
-      oauth_signature: 'totally invalid.',
-      oauth_verifier: 'hmm'
-    }, function getSecrets(options, cb) {
-      should.equal(options.accessToken, null);
-      should.equal(options.requestToken, 'wut');
-      cb(null, {consumer: 'hey', requestToken: 'blegh'});
+      oauth_signature: 'totally invalid.'
+    }, function getSecrets(consumerKey, oauthToken, cb) {
+      cb(null, 'hey');
     })).get('/')
       .expect('invalid signature')
       .expect(401, done);
@@ -55,18 +64,20 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       oauth_version: '1.0A',
       oauth_timestamp: 1396492044,
       oauth_nonce: 'u',
+      oauth_token: 'blugrh',
       oauth_consumer_key: 'lol'
     }, 'consumersecret', 'atsecret');
 
-    signature.should.eql('AGKLZGlxw4+GjNRHBwkRs3Ivbm8=');
-    request(app({
+    request(app(false, {
       oauth_version: '1.0A',
       oauth_timestamp: '1396492044',
       oauth_nonce: 'u',
+      oauth_token: 'blugrh',
       oauth_consumer_key: 'lol',
       oauth_signature: signature
-    }, function getSecrets(options, cb) {
-      cb(null, {consumer: 'consumersecret', accessToken: 'atsecret'});
+    }, function getSecrets(consumerKey, oauthToken, cb) {
+      oauthToken.should.eql('blugrh');
+      cb(null, 'consumersecret', 'atsecret');
     })).get('/boop?foo=lol&z=z')
       .expect(200, done);
   });
