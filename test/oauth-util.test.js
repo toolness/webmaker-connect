@@ -5,8 +5,8 @@ var request = require('supertest');
 
 var oauthUtil = require('../').oauthUtil;
 
-describe('oauthUtil.signedOAuthRequestMiddleware()', function() {
-  var middleware = oauthUtil.signedOAuthRequestMiddleware;
+describe('oauthUtil.hmacSignedMiddleware()', function() {
+  var middleware = oauthUtil.hmacSignedMiddleware;
 
   function app(oauth, getSecrets) {
     oauth.oauth_signature_method = 'HMAC-SHA1';
