@@ -5,6 +5,14 @@ var oauthUtil = require('../').oauthUtil;
 describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
 
+  it('should accept complex objects for validation criteria', function() {
+    var criteria = {a: {required: false, regexp: /c/}, eh: true};
+    should.equal(decode('oauth a="b", eh="1"', criteria), null);
+    should.equal(decode('oauth a="c"', criteria), null);
+    decode('oauth a="c", eh="1"', criteria).should.eql({a: 'c', eh: '1'});
+    decode('oauth eh="1"', criteria).should.eql({eh: '1'});
+  });
+
   it('should reject params not matching regexp', function() {
     should.equal(decode('oauth a="b"', {a: /c/}), null);
   });
