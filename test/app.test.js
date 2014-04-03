@@ -52,4 +52,10 @@ describe("app", function() {
       .get('/test/')
       .expect(200, done);
   });
+
+  it('registers oauth endpoints', function(done) {
+    request()
+      .post('/api/oauth/request_token')
+      .expect(501, done);
+  });
 });
