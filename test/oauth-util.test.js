@@ -5,6 +5,18 @@ var oauthUtil = require('../').oauthUtil;
 describe('oauthUtil.decodeAuthorizationHeader()', function() {
   var decode = oauthUtil.decodeAuthorizationHeader;
 
+  it('should reject params not matching regexp', function() {
+    should.equal(decode('oauth a="b"', {a: /c/}), null);
+  });
+
+  it('should accept params matching regexp', function() {
+    decode('oauth a="b"', {a: /b/}).should.eql({a: 'b'});
+  });
+
+  it('should accept params matching regexp', function() {
+    should.equal(decode('oauth funk="heh"', {}), null);
+  });
+
   it('should reject names not on whitelist', function() {
     should.equal(decode('oauth funk="heh"', {}), null);
   });
