@@ -28,7 +28,7 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       options.accessToken.should.eql('wut');
       cb(null, null);
     })).get('/')
-      .expect('invalid consumer key or access token')
+      .expect('invalid consumer key or request/access token')
       .expect(401, done);
   });
 
@@ -40,7 +40,8 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       oauth_verifier: 'hmm'
     }, function getSecrets(options, cb) {
       should.equal(options.accessToken, null);
-      cb(null, {consumer: 'hey'});
+      should.equal(options.requestToken, 'wut');
+      cb(null, {consumer: 'hey', requestToken: 'blegh'});
     })).get('/')
       .expect('invalid signature')
       .expect(401, done);
