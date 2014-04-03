@@ -56,6 +56,7 @@ describe("app", function() {
   it('registers oauth endpoints', function(done) {
     request()
       .post('/api/oauth/request_token')
-      .expect(501, done);
+      .expect('missing authorization header')
+      .expect(400, done);
   });
 });
