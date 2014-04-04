@@ -35,7 +35,8 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
   it('should reject invalid consumer key', function(done) {
     request(app(true, {
       oauth_consumer_key: 'lol',
-    }, function getSecrets(consumerKey, oauthToken, cb) {
+    }, function getSecrets(req, consumerKey, oauthToken, cb) {
+      req.method.should.eql('GET');
       consumerKey.should.eql('lol');
       should.equal(oauthToken, undefined);
       cb(null, null, null);
@@ -48,7 +49,7 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
     request(app(false, {
       oauth_consumer_key: 'lol',
       oauth_token: 'bleh'
-    }, function getSecrets(consumerKey, oauthToken, cb) {
+    }, function getSecrets(req, consumerKey, oauthToken, cb) {
       consumerKey.should.eql('lol');
       oauthToken.should.eql('bleh');
       cb(null, 'lol', null);
@@ -61,7 +62,7 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
     request(app(true, {
       oauth_consumer_key: 'lol',
       oauth_signature: 'totally invalid.'
-    }, function getSecrets(consumerKey, oauthToken, cb) {
+    }, function getSecrets(req, consumerKey, oauthToken, cb) {
       cb(null, 'hey');
     })).get('/')
       .expect('invalid signature')
@@ -87,7 +88,7 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       oauth_token: 'blugrh',
       oauth_consumer_key: 'lol',
       oauth_signature: signature
-    }, function getSecrets(consumerKey, oauthToken, cb) {
+    }, function getSecrets(req, consumerKey, oauthToken, cb) {
       oauthToken.should.eql('blugrh');
       cb(null, 'consumersecret', 'atsecret');
     })).get('/boop?foo=lol&z=z')
