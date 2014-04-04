@@ -1,4 +1,5 @@
 var fs = require('fs');
+var util = require('util');
 var express = require('express');
 var OAuth = require('oauth').OAuth;
 var _ = require('underscore');
@@ -64,7 +65,9 @@ app.get('/callback', function(req, res) {
     session.oauth_secret,
     verifier,
     function(err, access_token, access_secret, results2) {
-      if (err) throw err;
+      if (err) {
+        return res.type('text/plain').send(util.inspect(err));
+      }
       delete session.oauth_token;
       delete session.oauth_secret;
       session.access_token = access_token;

@@ -1,5 +1,7 @@
 {% extends "layout.html" %}
 
+{% from "application/macros.html" import appProfile %}
+
 {% block title %}Authorize Application{% endblock %}
 
 {% block content %}
@@ -8,6 +10,16 @@
       {{ error }}
     </div>
   {% else %}
-    Yay!
+    <p>Would you like to allow the following application to access your
+      basic user information?</p>
+
+    {{ appProfile(app) }}
+
+    <form method="POST" role="form">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <input type="hidden" name="oauth_token" value="{{ oauthToken.token }}">
+
+      <button type="submit" class="btn btn-primary">Grant Access</button>
+    </form>
   {% endif %}
 {% endblock %}
