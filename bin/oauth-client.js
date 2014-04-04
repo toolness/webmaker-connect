@@ -60,6 +60,9 @@ app.get('/callback', function(req, res) {
   var verifier = req.param('oauth_verifier');
   var session = loadSession();
 
+  if (token != session.oauth_token)
+    return res.send('token mismatch');
+
   oauth().getOAuthAccessToken(
     session.oauth_token,
     session.oauth_secret,

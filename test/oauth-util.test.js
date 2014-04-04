@@ -5,6 +5,18 @@ var request = require('supertest');
 
 var oauthUtil = require('../').oauthUtil;
 
+describe('oauthUtil.callbackURL()', function() {
+  it('should work when query args are already present', function() {
+    oauthUtil.callbackURL('http://foo.org/?lol=1', 'a', 'b')
+      .should.eql('http://foo.org/?lol=1&oauth_token=a&oauth_verifier=b');
+  });
+
+  it('should work when query args are not present', function() {
+    oauthUtil.callbackURL('http://foo.org/', 'a', 'b')
+      .should.eql('http://foo.org/?oauth_token=a&oauth_verifier=b');
+  });
+});
+
 describe('oauthUtil.hmacSignedMiddleware()', function() {
   var middleware = oauthUtil.hmacSignedMiddleware;
 
