@@ -15,15 +15,17 @@ const ORIGIN = process.env['ORIGIN'] || (DEBUG
   : null);
 const STATIC_ROOT = process.env['STATIC_ROOT'] || ORIGIN;
 
-assert.ok(ORIGIN, 'ORIGIN env var should be defined.');
-assert.ok(COOKIE_SECRET, 'COOKIE_SECRET env var should be defined.');
-assert.ok((SSL_KEY && SSL_CERT) || (!SSL_KEY && !SSL_CERT),
-          'if one of SSL_KEY or SSL_CERT is defined, the other must too.');
-if (SSL_KEY)
-  assert.equal(url.parse(ORIGIN).protocol, 'https:',
-               'ORIGIN must be https if SSL is enabled.');
-if (ENABLE_STUBBYID)
-  assert.ok(DEBUG, 'ENABLE_STUBBYID must be used with DEBUG.');
+function validateEnvironment() {
+  assert.ok(ORIGIN, 'ORIGIN env var should be defined.');
+  assert.ok(COOKIE_SECRET, 'COOKIE_SECRET env var should be defined.');
+  assert.ok((SSL_KEY && SSL_CERT) || (!SSL_KEY && !SSL_CERT),
+            'if one of SSL_KEY or SSL_CERT is defined, the other must too.');
+  if (SSL_KEY)
+    assert.equal(url.parse(ORIGIN).protocol, 'https:',
+                 'ORIGIN must be https if SSL is enabled.');
+  if (ENABLE_STUBBYID)
+    assert.ok(DEBUG, 'ENABLE_STUBBYID must be used with DEBUG.');
+}
 
 function startServer() {
   var app = require('../').app.build({
@@ -56,4 +58,9 @@ function startServer() {
   });
 }
 
-startServer();
+module.exports.ORIGIN = ORIGIN;
+
+if (!module.parent) {
+  validateEnvironment();
+  startServer();
+}
