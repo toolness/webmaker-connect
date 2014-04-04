@@ -10,6 +10,7 @@
     "mocha": "1.12.0",
     "should": "1.2.2",
     "sinon": "1.7.3",
+    "oauth": "0.9.11",
     "supertest": "0.7.1"
   },
   "dependencies": {
