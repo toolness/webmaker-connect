@@ -1,6 +1,7 @@
 var http = require('http');
 var express = require('express');
 var OAuth = require('oauth').OAuth;
+var async = require('async');
 var should = require('should');
 
 var libRequire = require('../').module;
@@ -60,40 +61,62 @@ describe('api (oauth)', function() {
 
   it('should work', function(done) {
     var auth = oauth();
-    auth.getOAuthRequestToken(function(err, token, secret, results) {
-      if (err) return done(errorify(err));
+
+    function getRequestToken(cb) {
+      auth.getOAuthRequestToken(function(err, token, secret, results) {
+        if (err) return cb(errorify(err));
+        cb(null, token, secret);
+      });
+    }
+
+    function authorize(token, secret, cb) {
       Tokens.RequestToken.findOne({
         token: token
       }).populate('application').exec(function(err, reqToken) {
-        if (err) return done(err);
+        if (err) return cb(err);
         reqToken.application.name.should.eql('example app');
         reqToken.callbackURL.should.eql('http://example.org/callback');
         should.equal(reqToken.verifier, undefined);
         reqToken.userInfo = {username: 'foo'};
         reqToken.save(function(err) {
-          if (err) return done(err);
+          if (err) return cb(err);
           reqToken.verifier.should.be.a('string');
-          auth.getOAuthAccessToken(
-            token,
-            secret,
-            reqToken.verifier,
-            function(err, accessToken, accessSecret, results) {
-              if (err) return done(errorify(err));
-              results.username.should.eql('foo');
-              auth.get(
-                origin + '/api/account/settings.json',
-                accessToken,
-                accessSecret,
-                function(err, data) {
-                  if (err) return done(errorify(err));
-                  JSON.parse(data).should.eql({username: 'foo'});
-                  done();
-                }
-              );
-            }
-          );
+          cb(null, token, secret, reqToken.verifier);
         });
       });
-    });
+    }
+
+    function getAccessToken(token, secret, verifier, cb) {
+      auth.getOAuthAccessToken(
+        token,
+        secret,
+        verifier,
+        function(err, accessToken, accessSecret, results) {
+          if (err) return cb(errorify(err));
+          results.username.should.eql('foo');
+          cb(null, accessToken, accessSecret);
+        }
+      );
+    }
+
+    function getAccountSettings(token, secret, cb) {
+      auth.get(
+        origin + '/api/account/settings.json',
+        token,
+        secret,
+        function(err, data) {
+          if (err) return cb(errorify(err));
+          JSON.parse(data).username.should.eql('foo');
+          cb(null, token, secret);
+        }
+      );
+    }
+
+    async.waterfall([
+      getRequestToken,
+      authorize,
+      getAccessToken,
+      getAccountSettings
+    ], done);
   });
 });

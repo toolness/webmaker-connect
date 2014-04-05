@@ -11,6 +11,7 @@
     "should": "1.2.2",
     "sinon": "1.7.3",
     "oauth": "0.9.11",
+    "async": "0.6.2",
     "supertest": "0.7.1"
   },
   "dependencies": {
