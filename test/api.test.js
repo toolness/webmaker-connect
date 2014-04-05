@@ -59,6 +59,24 @@ describe('api (oauth)', function() {
 
   afterEach(function(done) { server.close(done); });
 
+  it('should protect against replay attacks', function(done) {
+    var auth = oauth();
+    var nonce = auth._getNonce(auth._nonceSize);
+    var timestamp = auth._getTimestamp();
+
+    auth._getNonce = function() { return nonce; };
+    auth._getTimestamp = function() { return timestamp; };
+
+    auth.getOAuthRequestToken(function(err, token, secret, results) {
+      if (err) return done(errorify(err));
+      auth.getOAuthRequestToken(function(err, token, secret, results) {
+        err.statusCode.should.eql(401);
+        err.data.should.eql("invalid nonce or timestamp");
+        done();
+      });
+    });
+  });
+
   it('should work', function(done) {
     var auth = oauth();
 
