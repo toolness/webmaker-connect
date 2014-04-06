@@ -2,20 +2,29 @@ var fs = require('fs');
 var util = require('util');
 var express = require('express');
 var OAuth = require('oauth').OAuth;
+var Application = require('../').module('./model/application');
 var _ = require('underscore');
 
 var ORIGIN = require('./app').ORIGIN;
 var CONSUMER_PORT = process.env.CONSUMER_PORT || 3001;
 var CONSUMER_ORIGIN = 'http://localhost:' + CONSUMER_PORT;
-var CONSUMER_KEY = process.env.CONSUMER_KEY;
-var CONSUMER_SECRET = process.env.CONSUMER_SECRET;
 var SESSION_FILE = __dirname + '/../.oauth-client-session.json';
 
 var app = express();
+var oauthAppName = process.argv[2];
+var consumerKey, consumerSecret;
 
-if (!(ORIGIN && CONSUMER_KEY && CONSUMER_SECRET)) {
-  console.log('please set the ORIGIN, CONSUMER_KEY, CONSUMER_SECRET');
-  console.log('environment variables.');
+if (!ORIGIN) {
+  console.error('Please set ORIGIN or DEBUG as per README.md.');
+  process.exit(1);
+}
+
+if (!oauthAppName)
+  oauthAppNameError('Please provide the name of an app in the database.');
+
+function oauthAppNameError(msg) {
+  console.error(msg);
+  console.error('You can manage your apps at ' + ORIGIN + '/app.');
   process.exit(1);
 }
 
@@ -23,8 +32,8 @@ function oauth() {
   return new OAuth(
     ORIGIN + '/api/oauth/request_token',
     ORIGIN + '/api/oauth/access_token',
-    process.env.CONSUMER_KEY,
-    process.env.CONSUMER_SECRET,
+    consumerKey,
+    consumerSecret,
     '1.0A',
     CONSUMER_ORIGIN + '/callback',
     'HMAC-SHA1'
@@ -115,6 +124,15 @@ app.get('/login', function(req, res, next) {
   });
 });
 
-app.listen(CONSUMER_PORT, function() {
-  console.log('listening on ' + CONSUMER_PORT);
+Application.findOne({name: oauthAppName}, function(err, application) {
+  if (err) throw err;
+  if (!application)
+    return oauthAppNameError('App "' + oauthAppName + '" not found.');
+  consumerKey = application.apiKey;
+  consumerSecret = application.apiSecret;
+  console.log('Found app "' + oauthAppName + '" with API key ' +
+              consumerKey + '.');
+  app.listen(CONSUMER_PORT, function() {
+    console.log('Listening at ' + CONSUMER_ORIGIN + '.');
+  });
 });
