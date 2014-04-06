@@ -29,6 +29,10 @@ node bin/app.js
 
 Then visit http://localhost:3000.
 
+You can then use the website to create an OAuth client application, and
+start `node bin/oauth-client.js` to interact with Webmaker Connect
+from the OAuth client's perspective.
+
 ## Environment Variables
 
 **Note:** When an environment variable is described as representing a
