@@ -10,20 +10,66 @@ var Tokens = lib.module('./model/tokens');
 var NamedRoutes = lib.NamedRoutes;
 var db = require('./db');
 
+var users = {
+  'foo': {
+    email: 'foo@example.org',
+    username: 'foo',
+    userId: 'id$foo'
+  },
+  'developer': {
+    userId: 'id$developer',
+    username: 'developer',
+    email: 'developer@example.org'
+  }
+};
+
+var exampleApp = {
+  name: 'example app',
+  description: 'just for testing',
+  website: 'http://myapp.com',
+  owner: users.developer,
+  apiKey: 'consumerkey'
+};
+
+function bodyDoesNotContain(criteria) {
+  return function(res) {
+    function errIfTrue(condition) {
+      if (condition)
+        return 'expected ' + criteria + ' to not be in ' +
+               JSON.stringify(res.text);
+    }
+
+    if (criteria instanceof RegExp)
+      return errIfTrue(res.text.match(criteria));
+
+    if (typeof(criteria) == 'string')
+      return errIfTrue(res.text.indexOf(criteria) != -1);
+
+    throw new Error('do not know what to do with ' + criteria);
+  };
+}
+
 describe("website", function() {
-  var app, email, username;
+  var app, email, username, userId;
+
+  function setUser(userKey) {
+    var user = users[userKey];
+    should(user);
+    email = user.email; username = user.username; userId = user.userId;
+  }
 
   beforeEach(db.wipe);
   beforeEach(function(done) {
     email = null;
     username = null;
+    userId = null;
     app = express();
 
-    NamedRoutes.express(app);
+    NamedRoutes.express(app, 'http://example.org');
     app.use(express.json());
     app.use(function(req, res, next) {
       req.csrfToken = function() { return 'irrelevant'; }
-      req.session = {email: email, username: username};
+      req.session = {email: email, username: username, userId: userId};
       next();
     });
 
@@ -54,22 +100,66 @@ describe("website", function() {
       .expect(200, done);
   });
 
+  describe('/app', function() {
+    var application;
+
+    beforeEach(db.wipe);
+    beforeEach(function(done) {
+      app.namedRoutes.add('/oauth/request_token', 'oauth:request_token');
+      app.namedRoutes.add('/oauth/access_token', 'oauth:access_token');
+      application = new Application(exampleApp);
+      application.save(done);      
+    });
+
+    it('should reject unauthenticated users', function(done) {
+      request(app).get('/app').expect(401, done);
+    });
+
+    it('should show a user\'s owned apps', function(done) {
+      setUser('developer');
+      request(app)
+        .get('/app')
+        .expect(/example app/)
+        .expect(200, done);
+    });
+
+    it('should not show a user\'s unowned apps', function(done) {
+      setUser('foo');
+      request(app)
+        .get('/app')
+        .expect(bodyDoesNotContain(/example app/))
+        .expect(200, done);
+    });
+
+    describe('/app/:appId/', function(done) {
+      it('should not show private app info to non-owners', function(done) {
+        setUser('foo');
+        request(app)
+          .get('/app/' + application._id)
+          .expect(/example app/)
+          .expect(bodyDoesNotContain(/API Secret/))
+          .expect(bodyDoesNotContain(application.apiSecret))
+          .expect(200, done);
+      });
+
+      it('should show private app info to owners', function(done) {
+        setUser('developer');
+        request(app)
+          .get('/app/' + application._id)
+          .expect(/example app/)
+          .expect(/API Secret/)
+          .expect(200, done);
+      });
+    });
+  });
+
   describe('/authorize', function() {
     var application, reqToken;
 
-    beforeEach(function() {
-      email = 'foo@example.org';
-      username = 'foo';
-    });
+    beforeEach(function() { setUser('foo') })
     beforeEach(db.wipe);
     beforeEach(function makeApplication(done) {
-      application = new Application({
-        name: 'example app',
-        description: 'just for testing',
-        website: 'http://myapp.com',
-        owner: 'tester',
-        apiKey: 'consumerkey'
-      });
+      application = new Application(exampleApp);
       application.save(done);
     });
     beforeEach(function makeRequestToken(done) {

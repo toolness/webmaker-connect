@@ -51,7 +51,11 @@ describe('api (oauth)', function() {
       name: 'example app',
       description: 'just for testing',
       website: 'http://example.org',
-      owner: 'tester',
+      owner: {
+        userId: 'id$tester',
+        username: 'tester',
+        email: 'foo@bar.org'
+      },
       apiKey: 'consumerkey',
       apiSecret: 'consumersecret'
     }).save(done);
@@ -95,7 +99,8 @@ describe('api (oauth)', function() {
         reqToken.application.name.should.eql('example app');
         reqToken.callbackURL.should.eql('http://example.org/callback');
         should.equal(reqToken.verifier, undefined);
-        reqToken.userInfo = {username: 'foo'};
+        reqToken.user = {username: 'foo', userId: 'id$foo',
+                         email: 'foo@bar.org'};
         reqToken.save(function(err) {
           if (err) return cb(err);
           reqToken.verifier.should.be.a('string');

@@ -12,7 +12,7 @@
     "sinon": "1.7.3",
     "oauth": "0.9.11",
     "async": "0.6.2",
-    "supertest": "0.7.1"
+    "supertest": "0.10.0"
   },
   "dependencies": {
     "express": "3.4.4",
