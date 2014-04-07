@@ -12,6 +12,17 @@
 {% endif %}
 
 {% for app in apps %}
-<p>{{ appProfile(app) }}</p>
+<div class="row">
+  <div class="col-sm-8">{{ appProfile(app) }}</div>
+  <div class="col-sm-4">
+    <form method="POST" action="{{ reverse('app:revoke', app) }}">
+      <input type="hidden" name="_csrf" value="{{ csrfToken }}">
+      <button type="submit" class="btn btn-danger">
+        <i class="fa fa-ban"></i>
+        Revoke Access
+      </button>
+    </form>
+  </div>
+</div>
 {% endfor %}
 {% endblock %}

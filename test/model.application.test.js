@@ -45,6 +45,50 @@ describe('Application', function() {
       done();
     });
   });
+
+  describe('revokeAccessToUser()', function() {
+    var app0, app1;
+
+    beforeEach(function(done) {
+      Application.create(exampleApp, {
+        name: 'another cool app',
+        description: 'another cool app yo',
+        website: 'http://coolapp2.com',
+        owner: 'bleh'
+      }, function(err, first, second) {
+        if (err) return done(err);
+        app0 = first;
+        app1 = second;
+        done();
+      });
+    });
+    beforeEach(function(done) {
+      Tokens.AccessToken.create({
+        token: 'app0 to foo',
+        user: {userId: 'foo'},
+        application: app0._id
+      }, {
+        token: 'app1 to foo',
+        user: {userId: 'foo'},
+        application: app1._id        
+      }, {
+        token: 'app0 to bar',
+        user: {userId: 'bar'},
+        application: app0._id
+      }, done);
+    });
+
+    it('should revoke only tokens for user ID and app', function(done) {
+      app0.revokeAccessToUser('foo', function(err) {
+        if (err) return done(err);
+        Tokens.AccessToken.find({}, function(err, results) {
+          if (err) return done(err);
+          results.should.have.length(2);
+          done();
+        });
+      });
+    });
+  });
 });
 
 describe('Application.findAuthorizedByUser', function(done) {
