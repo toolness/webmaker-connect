@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+
+{% from "application/macros.html" import appProfile %}
+
+{% block title %}Apps You Use{% endblock %}
+
+{% block content %}
+<h1>Apps You Use</h1>
+
+{% if apps.length == 0 %}
+<p>You aren't currently using any apps.</p>
+{% endif %}
+
+{% for app in apps %}
+<p>{{ appProfile(app) }}</p>
+{% endfor %}
+{% endblock %}

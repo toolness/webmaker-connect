@@ -21,7 +21,8 @@
       </div>
       {% if username %}
       <ul class="nav navbar-nav">
-        <li><a href="{{ reverse('app:list') }}">Your Apps</a></li>
+        <li><a href="{{ reverse('app:list') }}">Apps You Made</a></li>
+        <li><a href="{{ reverse('app:authorized') }}">Apps You Use</a></li>
       </ul>
       {% endif %}
       <ul class="nav navbar-nav navbar-right">
