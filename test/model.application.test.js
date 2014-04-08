@@ -56,6 +56,27 @@ describe('Application', function() {
   describe('remove()', function() {
     var apps;
 
+    function testTokenRemoval(modelName, done) {
+      Tokens[modelName].create({
+        token: 'apps.0',
+        application: apps[0]._id
+      }, {
+        token: 'apps.1',
+        application: apps[1]._id
+      }, function(err) {
+        if (err) return done(err);
+        apps[0].remove(function(err) {
+          if (err) return done(err);
+          Tokens[modelName].find({}, function(err, tokens) {
+            if (err) return done(err);
+            tokens.should.have.length(1);
+            tokens[0].token.should.eql('apps.1');
+            done();
+          });
+        });
+      });      
+    }
+
     beforeEach(db.wipe);
     beforeEach(function(done) {
       Application.create(exampleApp, exampleApp2, function(err) {
@@ -66,24 +87,11 @@ describe('Application', function() {
     });
 
     it('should remove associated request tokens', function(done) {
-      Tokens.RequestToken.create({
-        token: 'apps.0',
-        application: apps[0]._id
-      }, {
-        token: 'apps.1',
-        application: apps[1]._id
-      }, function(err) {
-        if (err) return done(err);
-        apps[0].remove(function(err) {
-          if (err) return done(err);
-          Tokens.RequestToken.find({}, function(err, tokens) {
-            if (err) return done(err);
-            tokens.should.have.length(1);
-            tokens[0].token.should.eql('apps.1');
-            done();
-          });
-        });
-      });
+      testTokenRemoval('RequestToken', done);
+    });
+
+    it('should remove associated access tokens', function(done) {
+      testTokenRemoval('AccessToken', done);
     });
   });
 
