@@ -11,6 +11,13 @@ var exampleApp = {
   owner: 'foo'
 };
 
+var exampleApp2 = {
+  name: 'another cool app',
+  description: 'another cool app yo',
+  website: 'http://coolapp2.com',
+  owner: 'bleh'
+};
+
 describe('Application', function() {
   beforeEach(db.wipe);
 
@@ -46,40 +53,68 @@ describe('Application', function() {
     });
   });
 
+  describe('remove()', function() {
+    var apps;
+
+    beforeEach(db.wipe);
+    beforeEach(function(done) {
+      Application.create(exampleApp, exampleApp2, function(err) {
+        if (err) return done(err);
+        apps = [].slice.call(arguments, 1);
+        done();
+      });
+    });
+
+    it('should remove associated request tokens', function(done) {
+      Tokens.RequestToken.create({
+        token: 'apps.0',
+        application: apps[0]._id
+      }, {
+        token: 'apps.1',
+        application: apps[1]._id
+      }, function(err) {
+        if (err) return done(err);
+        apps[0].remove(function(err) {
+          if (err) return done(err);
+          Tokens.RequestToken.find({}, function(err, tokens) {
+            if (err) return done(err);
+            tokens.should.have.length(1);
+            tokens[0].token.should.eql('apps.1');
+            done();
+          });
+        });
+      });
+    });
+  });
+
   describe('revokeAccessToUser()', function() {
-    var app0, app1;
+    var apps;
 
     beforeEach(function(done) {
-      Application.create(exampleApp, {
-        name: 'another cool app',
-        description: 'another cool app yo',
-        website: 'http://coolapp2.com',
-        owner: 'bleh'
-      }, function(err, first, second) {
+      Application.create(exampleApp, exampleApp2, function(err) {
         if (err) return done(err);
-        app0 = first;
-        app1 = second;
+        apps = [].slice.call(arguments, 1);
         done();
       });
     });
     beforeEach(function(done) {
       Tokens.AccessToken.create({
-        token: 'app0 to foo',
+        token: 'apps.0 to foo',
         user: {userId: 'foo'},
-        application: app0._id
+        application: apps[0]._id
       }, {
-        token: 'app1 to foo',
+        token: 'apps.1 to foo',
         user: {userId: 'foo'},
-        application: app1._id        
+        application: apps[1]._id        
       }, {
-        token: 'app0 to bar',
+        token: 'apps.0 to bar',
         user: {userId: 'bar'},
-        application: app0._id
+        application: apps[0]._id
       }, done);
     });
 
     it('should revoke only tokens for user ID and app', function(done) {
-      app0.revokeAccessToUser('foo', function(err) {
+      apps[0].revokeAccessToUser('foo', function(err) {
         if (err) return done(err);
         Tokens.AccessToken.find({}, function(err, results) {
           if (err) return done(err);
