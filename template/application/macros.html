@@ -1,6 +1,9 @@
 {% macro appProfile(app, link='') %}
   <div class="media">
-    <i class="pull-left fa fa-cog fa-5x media-object webmaker-app-icon"></i>
+    <div class="pull-left media-object webmaker-app-icon">
+      <i class="fa fa-cog fa-5x"></i>
+      <img src="{{ STATIC_ROOT }}/img/webmaker-logo.png">
+    </div>
     <div class="media-body">
       <h3 class="media-heading">
         {% if link %}<a href="{{ link }}">{% endif %}

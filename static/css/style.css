@@ -15,6 +15,14 @@ body {
   }
 }
 
-i.webmaker-app-icon {
+.webmaker-app-icon {
   color: gray;
+  position: relative;
+}
+
+.webmaker-app-icon img {
+  position: absolute;
+  top: 15px;
+  left: 10px;
+  width: 40px;
 }
