@@ -19,20 +19,20 @@
       <div class="navbar-header">
         <a class="navbar-brand" href="{{ reverse('home') }}">Webmaker Connect</a>
       </div>
-      {% if username %}
-      <ul class="nav navbar-nav">
-        <li><a href="{{ reverse('app:list') }}">Apps You Develop</a></li>
-        <li><a href="{{ reverse('app:authorized') }}">Apps You Use</a></li>
-      </ul>
-      {% endif %}
       <ul class="nav navbar-nav navbar-right">
         {% if email %}
-        <li><button type="button" class="js-logout btn btn-primary navbar-btn">Logout
-          {% if username %}
-            {{ username }}
-          {% else %}
-            {{email}}
-          {% endif %}</button></li>
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+            {% if username %}{{ username }}{% else %}{{ email }}{% endif %}
+            <i class="fa fa-caret-down"></i>
+          </a>
+          <ul class="dropdown-menu">
+            <li><a href="{{ reverse('app:list') }}">Apps You Develop</a></li>
+            <li><a href="{{ reverse('app:authorized') }}">Apps You Use</a></li>
+            <li class="divider"></li>
+            <li><a href="#" class="js-logout">Logout</a></li>
+          </ul>
+        </li>
         {% else %}
         <li><button type="button" class="js-login btn btn-primary navbar-btn">Login</button></li>
         {% endif %}
@@ -56,6 +56,7 @@
   </div>
 
   <script src="{{ STATIC_ROOT }}/vendor/jquery{{ DOT_MIN }}.js"></script>
+  <script src="{{ STATIC_ROOT }}/vendor/bootstrap{{ DOT_MIN }}.js"></script>
   <script src="{{ PERSONA_JS_URL }}"></script>
   <script src="{{ STATIC_ROOT }}/js/login.js"></script>
   {% block scripts %}{% endblock %}
