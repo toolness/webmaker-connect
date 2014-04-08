@@ -5,12 +5,31 @@
     <h1>A World of Webmaker Apps.</h1>
     <p>This is a prototype.</p>
   </div>
+
   <p>
     <strong>Webmaker Connect</strong> is an experiment that makes it possible for third-parties and mad scientists to create Web applications that securely integrate with <a href="{{ WEBMAKER_URL }}">Mozilla Webmaker</a> on a user's behalf.
   </p>
+
+  <h2>Why Webmaker Connect?</h2>
   <p>
     Currently, the only apps that exist in the Webmaker universe are <a href="http://thimble.webmaker.org">Thimble</a> and <a href="http://popcorn.webmaker.org">Popcorn Maker</a>. But what if more apps could be part of the ecosystem? What if your <a href="http://twinery.org/">Twine</a>, <a href="http://meemoo.org/">Meemoo</a>, and <a href="http://waterbearlang.com/">Waterbear</a> creations could appear in your Webmaker profile, with invitations for others to build upon and remix them?  What if users could seamlessly "level up" from Thimble to a more advanced tool like <a href="http://jsfiddle.net">jsfiddle</a>, <a href="http://jsbin.com">jsbin</a>, or <a href="http://brackets.io/">Brackets</a> without leaving Webmaker behind?
   </p>
-  <p>Webmaker Connect is an attempt to explore that possibility. At its core, it's an <a href="http://oauth.net/">OAuth</a> provider that provides APIs for third-party applications to request and obtain access to a user's Webmaker account. At the moment, applications can only request access to a Webmaker's username, user ID, and email hash (which is useful for displaying gravatars and issuing open badges). But more is on the way.</p>
-  <p>For more information, please see the <a href="https://etherpad.mozilla.org/webmaker-api-use-cases">use cases etherpad</a> and the <a href="https://github.com/toolness/webmaker-connect">github repo</a>.</p>
+  <p>
+    Webmaker Connect is an attempt to explore that possibility. At its core, it's an <a href="http://oauth.net/">OAuth</a> provider that provides APIs for third-party applications to request and obtain access to a user's Webmaker account. At the moment, applications can only request access to a Webmaker's username, user ID, and email hash (which is useful for displaying gravatars and issuing open badges). But more is on the way.
+  </p>
+
+  <h2>Can I see an example?</h2>
+  <p>
+    For a very simple example of Webmaker Connect in action, check out the <a href="https://webmaker-connect-node-example.herokuapp.com/">Example App</a>, which lets you authenticate with your Webmaker account.
+  </p>
+
+  <h2>I'm a developer. Can I make my own apps?</h2>
+  <p>
+    Yes, please do! Just visit the <a href="{{ reverse('app:list') }}">Apps You Develop</a> section, located under your user menu, to get started. Currently documentation is sparse, but you can visit the <a href="https://github.com/toolness/webmaker-connect-node-example">Example App source code</a> on GitHub for guidance.
+  </p>
+
+  <h2>Where can I find more information on this project?</h2>  
+  <p>
+    For more information, please see the <a href="https://etherpad.mozilla.org/webmaker-api-use-cases">use cases etherpad</a> and the <a href="https://github.com/toolness/webmaker-connect">github repo</a>.
+  </p>
 {% endblock %}
