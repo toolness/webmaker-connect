@@ -1,6 +1,16 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-  <p>Hello.</p>
-  <p>There is not much here right now, but for more context on what will eventually be here, please see the <a href="https://etherpad.mozilla.org/webmaker-api-use-cases">use cases etherpad</a> and the <a href="https://github.com/toolness/webmaker-connect">github repo</a>.</p>
+  <div class="jumbotron">
+    <h1>A World of Webmaker Apps.</h1>
+    <p>This is a prototype.</p>
+  </div>
+  <p>
+    <strong>Webmaker Connect</strong> is an experiment that makes it possible for third-parties and mad scientists to create Web applications that securely integrate with <a href="http://webmaker.org">Mozilla Webmaker</a> on a user's behalf.
+  </p>
+  <p>
+    Currently, the only apps that exist in the Webmaker universe are <a href="http://thimble.webmaker.org">Thimble</a> and <a href="http://popcorn.webmaker.org">Popcorn Maker</a>. But what if more apps could be part of the ecosystem? What if your <a href="http://twinery.org/">Twine</a>, <a href="http://meemoo.org/">Meemoo</a>, and <a href="http://waterbearlang.com/">Waterbear</a> creations could appear in your Webmaker profile, with invitations for others to build upon and remix them?  What if users could seamlessly "level up" from Thimble to a more advanced tool like <a href="http://jsfiddle.net">jsfiddle</a>, <a href="http://jsbin.com">jsbin</a>, or <a href="http://brackets.io/">Brackets</a> without leaving Webmaker behind?
+  </p>
+  <p>Webmaker Connect is an attempt to explore that possibility. At its core, it's an <a href="http://oauth.net/">OAuth</a> provider that provides APIs for third-party applications to request and obtain access to a user's Webmaker account. At the moment, applications can only request access to a Webmaker's username, user ID, and email hash (which is useful for displaying gravatars and issuing open badges). But more is on the way.</p>
+  <p>For more information, please see the <a href="https://etherpad.mozilla.org/webmaker-api-use-cases">use cases etherpad</a> and the <a href="https://github.com/toolness/webmaker-connect">github repo</a>.</p>
 {% endblock %}
