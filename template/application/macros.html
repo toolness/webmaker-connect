@@ -21,6 +21,7 @@
     <label>Name</label>
     <input type="text" class="form-control">
     {% endfieldwidget %}
+    <span class="help-block">Your application name is used in user-facing authorization screens.</span>
   </div>
 
   <div class="form-group">
@@ -28,6 +29,7 @@
     <label>Description</label>
     <textarea class="form-control"></textarea>
     {% endfieldwidget %}
+    <span class="help-block">Your application description is used in user-facing authorization screens.</span>
   </div>
 
   <div class="form-group">
@@ -35,12 +37,14 @@
     <label>Website</label>
     <input type="url" class="form-control" placeholder="http://">
     {% endfieldwidget %}
+    <span class="help-block">This is the fully-qualified URL where users can go to make use of your application. It's used in user-facing authorization screens.</span>
   </div>
 
+  <!-- We're not even using this field right now, so don't display it.
   <div class="form-group">
     {% fieldwidget form.field('callbackURL') %}
     <label>Callback URL</label>
     <input type="url" class="form-control" placeholder="http://">
     {% endfieldwidget %}
-  </div>
+  </div> -->
 {% endmacro %}
