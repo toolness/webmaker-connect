@@ -53,7 +53,7 @@ string), the boolean is true; otherwise, it's false.
   create an account there if necessary, as well as other sundry
   off-site links. Defaults to https://webmaker.org.
 
-* `MONGO_URL` is the URL to the MongoDB instance. If not present,
+* `MONGODB_URL` is the URL to the MongoDB instance. If not present,
   `mongodb://localhost/webmaker-connect` is used.
 
 * `COOKIE_SECRET` is the secret used to encrypt and sign cookies,
