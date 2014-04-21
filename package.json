@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "test": "node node_modules/mocha/bin/mocha test/*.test.js --check-leaks -R spec"
+    "test": "node node_modules/mocha/bin/mocha test/*.test.js -t 10000 --check-leaks -R spec"
   },
   "devDependencies": {
     "mocha": "1.12.0",
