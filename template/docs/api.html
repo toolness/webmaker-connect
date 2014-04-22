@@ -1,0 +1,110 @@
+{% extends 'layout.html' %}
+
+{% block title %}API Documentation{% endblock %}
+
+{% block head %}
+<style>
+code {
+  color: #2F6F9F;
+  background-color: #F7F7F9;
+  white-space: pre-wrap;
+}
+
+h2[id] {
+  border-left: 8px solid gray;
+  padding: 8px;
+  background-color: #f0f0f0;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<h1>API Documentation</h1>
+
+<p>You'll need to use <a href="http://tools.ietf.org/html/rfc5849">OAuth 1.0</a> to authenticate against Webmaker Connect. At present, the only supported signature method is <code>HMAC-SHA1</code>.</p>
+
+<p>For a concrete example of the API in use, see the <a href="https://github.com/toolness/webmaker-connect-node-example">Example App source code</a> on GitHub.</p>
+
+<div class="well">
+  <p><strong>OAuth</strong></p>
+  <ul class="list-unstyled">
+    <li><a href="#oauth:request_token">POST {{ reverse('oauth:request_token') }}</a></li>
+    <li><a href="#oauth:authorize">GET {{ reverse('oauth:authorize') }}</a></li>
+    <li><a href="#oauth:access_token">POST {{ reverse('oauth:access_token') }}</a></li>
+  </ul>
+</div>
+
+<h2 id="oauth:request_token">POST {{ reverse('oauth:request_token') }}</h2>
+
+  <p>Allows a Consumer application to obtain an OAuth Request Token to request user authorization. This method fulfills <a href="http://oauth.net/core/1.0/#auth_step1">Section 6.1</a> of the <a href="http://oauth.net/core/1.0/#anchor9">OAuth 1.0 authentication flow</a>.</p>
+
+  <h4>Resource URL</h4>
+
+  <p>{{ reverseAbsolute('oauth:request_token') }}</p>
+
+  <h4>Parameters</h4>
+
+  <dl class="dl-horizontal">
+    <dt>
+      oauth_callback
+      <div class="text-muted">required</div>
+    </dt>
+    <dd>
+      <p>For OAuth 1.0a compliance this parameter is <strong>required</strong>.
+      The value you specify here will be used as the URL a user is redirected to should they approve your application's access to their account.</p>
+      <p><strong>Example value:</strong> <code>http%3A%2F%2Fatulscomputer.local%2Fauth.php</code></p>
+    </dd>
+  </dl>
+
+  <h4>Example Request</h4>
+
+  <p>
+    <div>Authorization Header:</div>
+    <code>OAuth oauth_nonce="K7ny27JTpKVsTgdyLdDfmQQWVLERj2zAK5BslRsqyw", oauth_callback="http%3A%2F%2Fmyapp.com%3A3005%2Ftwitter%2Fprocess_callback", oauth_signature_method="HMAC-SHA1", oauth_timestamp="1300228849", oauth_consumer_key="OqEqJeafRSF11jBMStrZz", oauth_signature="Pc%2BMLdv028fxCErFyi8KXFM%2BddU%3D", oauth_version="1.0"</code>
+  </p>
+
+  <p>
+    <div>Response:</div>
+    <code>oauth_token=Z6eEdO8MOmk394WozF5oKyuAv855l4Mlqo7hhlSLik&amp;oauth_token_secret=Kd75W4OQfb2oJTV0vzGzeXftVAwgMnEK9MumzYcM&amp;oauth_callback_confirmed=true</code>
+  </p>
+
+<h2 id="oauth:authorize">GET {{ reverse('oauth:authorize') }}</h2>
+
+  <p>Allows a Consumer application to use an OAuth Request Token to request user authorization. This method fulfills <a href="http://oauth.net/core/1.0/#auth_step2">Section 6.2</a> of the <a href="http://oauth.net/core/1.0/#anchor9">OAuth 1.0 authentication flow</a>.</p>
+
+  <h4>Resource URL</h4>
+
+  <p>{{ reverseAbsolute('oauth:authorize') }}</p>
+
+  <h4>Example Request</h4>
+
+  <p>Send the user to the OAuth authorization step in a web browser, including an <code>oauth_token</code> parameter:
+  <code>{{ reverseAbsolute('oauth:authorize') }}?oauth_token=Z6eEdO8MOmk394WozF5oKyuAv855l4Mlqo7hhlSLik</code>
+
+<h2 id="oauth:access_token">POST {{ reverse('oauth:access_token') }}</h2>
+
+  <p>Allows a Consumer application to exchange the OAuth Request Token for an OAuth Access Token. This method fulfills <a href="http://oauth.net/core/1.0/#auth_step3">Section 6.3</a> of the <a href="http://oauth.net/core/1.0/#anchor9">OAuth 1.0 authentication flow</a>.</p>
+
+  <h4>Resource URL</h4>
+
+  <p>{{ reverseAbsolute('oauth:access_token') }}</p>
+
+  <h4>Parameters</h4>
+
+  <dl class="dl-horizontal">
+    <dt>
+      oauth_verifier
+      <div class="text-muted">required</div>
+    </dt>
+    <dd>
+      <p>Set this parameter to the value of the <code>oauth_verifier</code> returned in the callback URL.</p>
+    </dd>
+  </dl>
+
+  <h4>Example Request</h4>
+
+  <p>
+    <div>Response to a successful request:</div>
+    <code>oauth_token=eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY&amp;oauth_token_secret=2EEfA6BG3ly3sR3RjE0IBSnlQu4ZrUzPiYKmrkVU&amp;userId=129&amp;username=toolness&amp;emailHash=b6c1ebb35d0c41dfe0728dd0dc6ae5b1</code>
+  </p>
+{% endblock %}
