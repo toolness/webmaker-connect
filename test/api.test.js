@@ -81,6 +81,19 @@ describe('api (oauth)', function() {
     });
   });
 
+  it('should reject requests with really old timestamps', function(done) {
+    var auth = oauth();
+    var timestamp = auth._getTimestamp() - 5000;
+
+    auth._getTimestamp = function() { return timestamp; };
+
+    auth.getOAuthRequestToken(function(err, token, secret, results) {
+      err.statusCode.should.eql(401);
+      err.data.should.eql("timestamp is too old or too new");
+      done();
+    });
+  });
+
   it('should work', function(done) {
     var auth = oauth();
 
