@@ -4,7 +4,7 @@
 
 {% block head %}
 <style>
-code {
+code, pre {
   color: #2F6F9F;
   background-color: #F7F7F9;
   white-space: pre-wrap;
@@ -31,6 +31,11 @@ h2[id] {
     <li><a href="#oauth:request_token">POST {{ reverse('oauth:request_token') }}</a></li>
     <li><a href="#oauth:authorize">GET {{ reverse('oauth:authorize') }}</a></li>
     <li><a href="#oauth:access_token">POST {{ reverse('oauth:access_token') }}</a></li>
+  </ul>
+
+  <p><strong>Users</strong></p>
+  <ul class="list-unstyled">
+    <li><a href="#api:account:settings">GET {{ reverse('api:account:settings') }}</a></li>
   </ul>
 </div>
 
@@ -104,7 +109,25 @@ h2[id] {
   <h4>Example Request</h4>
 
   <p>
-    <div>Response to a successful request:</div>
+    <p>Response to a successful request:</p>
     <code>oauth_token=eWudHldSbIaelX7swmsiHImEL4KinwaGloHANdrY&amp;oauth_token_secret=2EEfA6BG3ly3sR3RjE0IBSnlQu4ZrUzPiYKmrkVU&amp;userId=129&amp;username=toolness&amp;emailHash=b6c1ebb35d0c41dfe0728dd0dc6ae5b1</code>
   </p>
+
+<h2 id="api:account:settings">GET {{ reverse('api:account:settings') }}</h2>
+
+  <p>Returns settings for the authenticating user.</p>
+
+  <h4>Resource URL</h4>
+
+  <p>{{ reverseAbsolute('api:account:settings') }}</p>
+
+  <h4>Example Request</h4>
+
+  <p>Response to a successful request:</p>
+
+  <pre>{
+  "userId": "129",
+  "username": "toolness",
+  "emailHash": "b6c1ebb35d0c41dfe0728dd0dc6ae5b1"
+}</pre>
 {% endblock %}
