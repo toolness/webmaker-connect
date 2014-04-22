@@ -11,6 +11,24 @@ var exampleApp = {
   owner: 'foo'
 };
 
+describe('Nonce', function() {
+  beforeEach(db.wipe);
+
+  it('should set timestampAsDate on save', function(done) {
+    var nonce = new Tokens.Nonce({
+      nonce: 'lol',
+      timestamp: Math.floor(Date.now() / 1000),
+      consumerKey: 'hmm'
+    });
+    nonce.save(function(err) {
+      if (err) return done(err);
+      nonce.timestampAsDate.getTime()
+        .should.be.approximately(Date.now(), 10000);
+      done();
+    });
+  });
+});
+
 describe('AccessToken.fromRequestToken', function() {
   var app, reqToken;
 
