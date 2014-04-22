@@ -18,8 +18,10 @@ describe('oauthUtil.callbackURL()', function() {
 });
 
 describe('oauthUtil.isTimestampAroundNow()', function() {
+  var now;
   var isTimestampAroundNow = oauthUtil.isTimestampAroundNow;
-  var now = Math.floor(Date.now() / 1000);
+
+  beforeEach(function() { now = Math.floor(Date.now() / 1000); });
 
   it('returns false when timestamp is too old', function() {
     isTimestampAroundNow(now - 60, 10).should.be.false;
