@@ -1,3 +1,4 @@
+var _ = require('underscore');
 var should = require('should');
 var express = require('express');
 var hmacsign = require('oauth-sign').hmacsign;
@@ -42,13 +43,14 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
   function app(isInitialRequest, oauth, getSecrets) {
     oauth.oauth_signature_method = 'HMAC-SHA1';
     return express()
+      .use(express.urlencoded())
       .use(function(req, res, next) { req.oauth = oauth; next(); })
       .use(middleware({
         baseURL: 'http://example.org',
         getSecrets: getSecrets,
         isInitialRequest: isInitialRequest
       }))
-      .get('*', function(req, res) { return res.send(200); });
+      .all('*', function(req, res) { return res.send(200); });
   }
 
   it('should reject invalid consumer key', function(done) {
@@ -88,30 +90,46 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       .expect(401, done);
   });
 
-  it('should accept valid signatures', function(done) {
-    var signature = hmacsign('GET', 'http://example.org/boop', {
-      foo: 'lol',
-      z: 'z',
-      oauth_signature_method: 'HMAC-SHA1',
-      oauth_version: '1.0A',
-      oauth_timestamp: 1396492044,
-      oauth_nonce: 'u',
-      oauth_token: 'blugrh',
-      oauth_consumer_key: 'lol'
-    }, 'consumersecret', 'atsecret');
-
-    request(app(false, {
-      oauth_version: '1.0A',
-      oauth_timestamp: '1396492044',
-      oauth_nonce: 'u',
-      oauth_token: 'blugrh',
-      oauth_consumer_key: 'lol',
-      oauth_signature: signature
-    }, function getSecrets(req, consumerKey, oauthToken, cb) {
+  describe('valid signatures', function() {
+    function getSecrets(req, consumerKey, oauthToken, cb) {
       oauthToken.should.eql('blugrh');
       cb(null, 'consumersecret', 'atsecret');
-    })).get('/boop?foo=lol&z=z')
-      .expect(200, done);
+    }
+
+    function signedOAuth(method, url, params) {
+      var oauthParams = {
+        oauth_signature_method: 'HMAC-SHA1',
+        oauth_version: '1.0A',
+        oauth_timestamp: '1396492044',
+        oauth_nonce: 'u',
+        oauth_token: 'blugrh',
+        oauth_consumer_key: 'lol'
+      };
+      var signature = hmacsign(method, url,
+                               _.extend({}, oauthParams, params),
+                               'consumersecret', 'atsecret');
+      return _.extend(oauthParams, {
+        oauth_signature: signature
+      });
+    }
+
+    it('should work w/ querystring args in GET requests', function(done) {
+      request(app(false, signedOAuth('GET', 'http://example.org/boop', {
+        foo: 'lol',
+        z: 'z'
+      }), getSecrets)).get('/boop?foo=lol&z=z')
+        .expect(200, done);
+    });
+
+    it('should work w/ form-encoded POST requests', function(done) {
+      request(app(false, signedOAuth('POST', 'http://example.org/boop', {
+        foo: 'lol',
+        z: 'z'
+      }), getSecrets)).post('/boop')
+        .type('urlencoded')
+        .send({foo: 'lol', z: 'z'})
+        .expect(200, done);
+    });
   });
 });
 
