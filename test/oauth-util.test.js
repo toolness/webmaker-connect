@@ -79,7 +79,7 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       .expect(401, done);
   });
 
-  it('should reject invalid signatures', function(done) {
+  it('rejects invalid signatures on requests w/o params', function(done) {
     request(app(true, {
       oauth_consumer_key: 'lol',
       oauth_signature: 'totally invalid.'
@@ -90,13 +90,13 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       .expect(401, done);
   });
 
-  describe('valid signatures', function() {
+  describe('signed requests w/ parameters', function() {
     function getSecrets(req, consumerKey, oauthToken, cb) {
       oauthToken.should.eql('blugrh');
       cb(null, 'consumersecret', 'atsecret');
     }
 
-    function signedOAuth(method, url, params) {
+    function signedOAuthRequest(method, url, params) {
       var oauthParams = {
         oauth_signature_method: 'HMAC-SHA1',
         oauth_version: '1.0A',
@@ -108,27 +108,46 @@ describe('oauthUtil.hmacSignedMiddleware()', function() {
       var signature = hmacsign(method, url,
                                _.extend({}, oauthParams, params),
                                'consumersecret', 'atsecret');
-      return _.extend(oauthParams, {
+
+      return request(app(false, _.extend(oauthParams, {
         oauth_signature: signature
-      });
+      }), getSecrets));
     }
 
-    it('should work w/ querystring args in GET requests', function(done) {
-      request(app(false, signedOAuth('GET', 'http://example.org/boop', {
+    it('accept querystring args in GET requests', function(done) {
+      signedOAuthRequest('GET', 'http://example.org/boop', {
         foo: 'lol',
         z: 'z'
-      }), getSecrets)).get('/boop?foo=lol&z=z')
+      }).get('/boop?foo=lol&z=z')
         .expect(200, done);
     });
 
-    it('should work w/ form-encoded POST requests', function(done) {
-      request(app(false, signedOAuth('POST', 'http://example.org/boop', {
+    it('accept form-encoded POST requests', function(done) {
+      signedOAuthRequest('POST', 'http://example.org/boop', {
         foo: 'lol',
         z: 'z'
-      }), getSecrets)).post('/boop')
+      }).post('/boop')
         .type('urlencoded')
         .send({foo: 'lol', z: 'z'})
         .expect(200, done);
+    });
+
+    it('reject tampered querystring args in GET requests', function(done) {
+      signedOAuthRequest('GET', 'http://example.org/boop', {
+        foo: 'lol',
+        z: 'z'
+      }).get('/boop?foo=lol&z=zHACKED')
+        .expect(401, done);
+    });
+
+    it('reject tampered form-encoded POST requests', function(done) {
+      signedOAuthRequest('POST', 'http://example.org/boop', {
+        foo: 'lol',
+        z: 'z'
+      }).post('/boop')
+        .type('urlencoded')
+        .send({foo: 'lol', z: 'zHACKED'})
+        .expect(401, done);
     });
   });
 });
