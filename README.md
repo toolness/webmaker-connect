@@ -89,6 +89,15 @@ string), the boolean is true; otherwise, it's false.
   not provided, the app will self-host its own static assets. Note that
   this URL should *not* end with a `/`.
 
+* `EMAIL_BACKEND_URL` is a URL representing the backend to use for
+  sending email. Currently, the only supported schemes are
+  'console:' and `mandril://your-api-key-here`. If `DEBUG` is set,
+  this defaults to `console:`; otherwise, it must be set explicitly.
+
+* `DEFAULT_FROM_EMAIL` is the default email address to use for various
+  automated correspondence. Defaults to `webmaster@localhost`. This can
+  be set to include a human-readable name, e.g. `My Website <foo@bar.org>`.
+
 ## Tests
 
 All tests can be run via `npm test`.

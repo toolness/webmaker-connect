@@ -14,10 +14,16 @@ const ORIGIN = process.env['ORIGIN'] || (DEBUG
   ? (SSL_KEY ? 'https' : 'http') + '://localhost:' + PORT
   : null);
 const STATIC_ROOT = process.env['STATIC_ROOT'] || ORIGIN;
+const EMAIL_BACKEND_URL = process.env['EMAIL_BACKEND_URL'] || (DEBUG
+  ? 'console:'
+  : null);
+const DEFAULT_FROM_EMAIL = process.env['DEFAULT_FROM_EMAIL'] ||
+                           'webmaster@localhost';
 
 function validateEnvironment() {
   assert.ok(ORIGIN, 'ORIGIN env var should be defined.');
   assert.ok(COOKIE_SECRET, 'COOKIE_SECRET env var should be defined.');
+  assert.ok(EMAIL_BACKEND_URL, 'EMAIL_BACKEND_URL should be defined.');
   assert.ok((SSL_KEY && SSL_CERT) || (!SSL_KEY && !SSL_CERT),
             'if one of SSL_KEY or SSL_CERT is defined, the other must too.');
   if (SSL_KEY)
@@ -28,13 +34,17 @@ function validateEnvironment() {
 }
 
 function startServer() {
-  var app = require('../').app.build({
+  var lib = require('../');
+  var app = lib.app.build({
     cookieSecret: COOKIE_SECRET,
     debug: DEBUG,
     personaDefineRoutes: ENABLE_STUBBYID &&
                          require('../test/lib/stubbyid-persona'),
     personaJsUrl: ENABLE_STUBBYID && (STATIC_ROOT + '/vendor/stubbyid.js'),
     staticRoot: STATIC_ROOT,
+    emailBackend: lib.email.createBackend(EMAIL_BACKEND_URL, {
+      from: DEFAULT_FROM_EMAIL
+    }),
     origin: ORIGIN
   });
 
