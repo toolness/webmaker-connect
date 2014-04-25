@@ -1,0 +1,5 @@
+{% if from %}From: {{from}}{% endif %}
+To: {{to}}
+Subject: {{subject}}
+
+{{text}}

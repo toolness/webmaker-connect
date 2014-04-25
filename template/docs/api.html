@@ -158,13 +158,25 @@ h2[id] {
 
   <p>
     <div>Request body:</div>
-    <code>text=hallo%20there</code>
+    {% set notifyText = "Hey, something cool happened while you were away!\nGo here to find out more: http://example.org/stuff" %}
+    <code>text={{ encodeURIComponent(notifyText) }}</code>
   </p>
 
-  <p>Response to a successful request:</p>
+  <p>
+    <div>Email sent:</div>
+    <pre>{{ renderNotificationEmail(
+      appName="Example",
+      username="toolness",
+      email="toolness@toolness.com",
+      text=notifyText
+    ) }}</pre>
+  </p>
 
-  <pre>{
+  <p>
+    <div>Response to a successful request:</div>
+    <pre>{
   "status": "sent"
 }</pre>
+  </p>
 
 {% endblock %}
