@@ -15,6 +15,27 @@ var SIMPLE_MESSAGE = {
   from_name: 'Our Website'
 };
 
+describe('email.sendOptionsToPlainText()', function() {
+  it('should work', function() {
+    var backend = email.createBackend('fake:');
+
+    backend.send({
+      from_email: 'lol@cat.org',
+      to: ['Haha <sup@boo.org>', 'blah@narg.org'],
+      subject: 'yo',
+      text: 'sup dog'
+    });
+
+    email.sendOptionsToPlainText(backend.inbox[0]).should.eql([
+      'From: lol@cat.org',
+      'To: Haha <sup@boo.org>, blah@narg.org',
+      'Subject: yo',
+      '',
+      'sup dog'
+    ].join('\n'));
+  });
+});
+
 describe('email.createBackend()', function() {
   it('should convert "from" to "from_email" and "from_name"', function() {
     var backend = email.createBackend('fake:');
