@@ -1,0 +1,12 @@
+Hi {{username}},
+
+The {{appName}} app wanted to notify you of the following:
+
+{{indentedText}}
+
+If you would like to stop receiving notifications from this
+app, you can do so at {{unsubscribeURL}}.
+
+Sincerely,
+
+The Webmaker Connect Notification Robot

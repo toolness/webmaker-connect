@@ -56,12 +56,29 @@ function updateSession(session) {
   return session;
 }
 
+app.use(express.urlencoded());
+
 app.get('/', function(req, res) {
-  return res.send([
-    '<a href="/login">login</a>',
-    '<a href="/settings">user settings</a> (requires login)',
-    '<a href="/logout">logout</a>',
-  ].join('<br>'));
+  var session = loadSession();
+  var isLoggedIn = !!session.access_token;
+  var greeting = 'You are logged ' + (isLoggedIn ? 'in.' : 'out.');
+  var lines = ['<p>' + greeting + '</p>'];
+
+  if (isLoggedIn)
+    lines.push(
+      '<a href="/settings">user settings</a><br>',
+      '<form method="POST" action="/notify">',
+      '  <textarea name="text" rows="5" cols="40"></textarea>',
+      '  <button type="submit">Send notification to yourself</button>',
+      '</form>',
+      '<a href="/logout">logout</a><br>'
+    );
+  else
+    lines.push(
+      '<a href="/login">login</a>'
+    )
+  
+  return res.send(lines.join('\n'));
 });
 
 app.get('/callback', function(req, res) {
@@ -86,7 +103,22 @@ app.get('/callback', function(req, res) {
       session.access_secret = access_secret;
       writeSession(session);
       console.log(results2);
-      return res.redirect('/settings');
+      return res.redirect('/');
+    }
+  );
+});
+
+app.post('/notify', function(req, res, next) {
+  var session = loadSession();
+  if (!session.access_token) return res.redirect('/login');
+  var req = oauth().post(
+    ORIGIN + '/api/account/notify.json',
+    session.access_token,
+    session.access_secret,
+    {text: req.param('text') || 'hello!'},
+    function(err, data) {
+      if (err) throw err;
+      return res.type('text/plain').send(data);
     }
   );
 });
@@ -110,7 +142,7 @@ app.get('/settings', function(req, res, next) {
 
 app.get('/logout', function(req, res, next) {
   writeSession({});
-  return res.send('logged out');
+  return res.redirect('/');
 });
 
 app.get('/login', function(req, res, next) {

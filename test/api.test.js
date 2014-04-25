@@ -8,6 +8,7 @@ var libRequire = require('../').module;
 var Application = libRequire('./model/application');
 var Tokens = libRequire('./model/tokens');
 var NamedRoutes = libRequire('./named-routes');
+var email = libRequire('./email');
 var api = libRequire('./api');
 var db = require('./db');
 
@@ -17,7 +18,7 @@ function errorify(err) {
 }
 
 describe('api (oauth)', function() {
-  var app, server, origin, oauth;
+  var app, server, origin, oauth, appModel, fakeEmail;
 
   function oauth(options) {
     options = options || {};
@@ -35,6 +36,7 @@ describe('api (oauth)', function() {
   beforeEach(db.wipe);
   beforeEach(function startServer(done) {
     app = express();
+    app.use(express.urlencoded());
     server = http.createServer(app);
     server.listen(function() {
       origin = 'http://localhost:' + server.address().port;
@@ -42,12 +44,17 @@ describe('api (oauth)', function() {
     });
   });
   beforeEach(function setupApp() {
+    fakeEmail = email.createBackend('fake:');
     app.apiPrefix = '/api/';
-    app.namedRoutes = new NamedRoutes();
-    api.express(app, {origin: origin});
+    app.namedRoutes = new NamedRoutes('http://example.org');
+    app.namedRoutes.add('/revoke', 'app:authorized');
+    api.express(app, {
+      origin: origin,
+      emailBackend: fakeEmail
+    });
   });
   beforeEach(function registerConsumerApplication(done) {
-    new Application({
+    appModel = new Application({
       name: 'example app',
       description: 'just for testing',
       website: 'http://example.org',
@@ -58,7 +65,8 @@ describe('api (oauth)', function() {
       },
       apiKey: 'consumerkey',
       apiSecret: 'consumersecret'
-    }).save(done);
+    });
+    appModel.save(done);
   });
 
   afterEach(function(done) { server.close(done); });
@@ -154,5 +162,71 @@ describe('api (oauth)', function() {
       getAccessToken,
       getAccountSettings
     ], done);
+  });
+
+  describe('privileged calls w/ access tokens', function() {
+    beforeEach(function(done) {
+      var token = new Tokens.AccessToken({
+        token: 'at',
+        tokenSecret: 'atsecret',
+        user: {
+          username: 'foo',
+          userId: 'id$foo',
+          email: 'foo@bar.org'
+        },
+        application: appModel._id
+      });
+      token.save(done);
+    });
+
+    it('returns 200 @ GET /api/account/settings.json', function(done) {
+      oauth().get(
+        origin + '/api/account/settings.json',
+        'at',
+        'atsecret',
+        function(err, data) {
+          if (err) return done(errorify(err));
+          JSON.parse(data).username.should.eql('foo');
+          done();
+        }
+      );
+    });
+
+    it('returns 200 @ POST /api/account/notify.json', function(done) {
+      oauth().post(
+        origin + '/api/account/notify.json',
+        'at',
+        'atsecret',
+        {text: "hello there\nhow r u"},
+        function(err, data) {
+          if (err) return done(errorify(err));
+          JSON.parse(data).status.should.eql('sent');
+          fakeEmail.inbox.should.eql([{
+            subject: 'Webmaker Connect notification from the example app app',
+            text: [
+              'Hi foo,',
+              '',
+              'The example app app wanted to notify you of the following:',
+              '',
+              '    hello there',
+              '    how r u',
+              '',
+              'If you would like to stop receiving notifications from this',
+              'app, you can do so at http://example.org/revoke.',
+              '',
+              'Sincerely,',
+              '',
+              'The Webmaker Connect Notification Robot'
+            ].join('\n'),
+            to: [{
+              email: 'foo@bar.org',
+              name: 'foo',
+              type: 'to'
+            }]
+          }]);
+          done();
+        }
+      );
+    });
   });
 });
