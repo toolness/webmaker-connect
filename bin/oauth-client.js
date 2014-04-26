@@ -11,7 +11,7 @@ var CONSUMER_ORIGIN = 'http://localhost:' + CONSUMER_PORT;
 var SESSION_FILE = __dirname + '/../.oauth-client-session.json';
 
 var app = express();
-var oauthAppName = process.argv[2];
+var oauthAppName;
 var consumerKey, consumerSecret;
 
 if (!ORIGIN) {
@@ -19,8 +19,19 @@ if (!ORIGIN) {
   process.exit(1);
 }
 
-if (!oauthAppName)
-  oauthAppNameError('Please provide the name of an app in the database.');
+if (process.argv.length == 3) {
+  oauthAppName = process.argv[2];
+} else if (process.argv.length == 4) {
+  consumerKey = process.argv[2];
+  consumerSecret = process.argv[3];
+}
+
+if (!oauthAppName && !consumerKey)
+  oauthAppNameError(
+    'Usage:\n' +
+    '  oauth-client.js <app-name>\n' +
+    '  oauth-client.js <consumer-key> <consumer-secret>\n'
+  );
 
 function oauthAppNameError(msg) {
   console.error(msg);
@@ -156,15 +167,20 @@ app.get('/login', function(req, res, next) {
   });
 });
 
-Application.findOne({name: oauthAppName}, function(err, application) {
-  if (err) throw err;
-  if (!application)
-    return oauthAppNameError('App "' + oauthAppName + '" not found.');
-  consumerKey = application.apiKey;
-  consumerSecret = application.apiSecret;
-  console.log('Found app "' + oauthAppName + '" with API key ' +
-              consumerKey + '.');
+if (oauthAppName)
+  Application.findOne({name: oauthAppName}, function(err, application) {
+    if (err) throw err;
+    if (!application)
+      return oauthAppNameError('App "' + oauthAppName + '" not found.');
+    consumerKey = application.apiKey;
+    consumerSecret = application.apiSecret;
+    console.log('Found app "' + oauthAppName + '" with API key ' +
+                consumerKey + '.');
+    app.listen(CONSUMER_PORT, function() {
+      console.log('Listening at ' + CONSUMER_ORIGIN + '.');
+    });
+  });
+else
   app.listen(CONSUMER_PORT, function() {
     console.log('Listening at ' + CONSUMER_ORIGIN + '.');
   });
-});
