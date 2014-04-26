@@ -88,13 +88,13 @@ describe('MandrillBackend', function() {
   var mandrill, backend;
 
   beforeEach(function() {
-    mandrill = nock('https://api.mandrill.com');
+    mandrill = nock('https://mandrillapp.com');
     backend = email.createBackend('mandrill://foo');
   });
   afterEach(function() { mandrill.done(); });
 
   it('should work', function(done) {
-    mandrill.post('/messages/send.json', {
+    mandrill.post('/api/1.0/messages/send.json', {
       key: 'foo',
       message: SIMPLE_MESSAGE
     })
@@ -104,7 +104,7 @@ describe('MandrillBackend', function() {
   });
 
   it('should propagate non-200 responses as errors', function(done) {
-    mandrill.post('/messages/send.json', {
+    mandrill.post('/api/1.0/messages/send.json', {
       key: 'foo',
       message: SIMPLE_MESSAGE
     })
